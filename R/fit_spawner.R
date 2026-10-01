@@ -41,5 +41,17 @@ fit_spawner <- function(
       arrival_quantile = arrival_quantile
     )
   
-  stop("Not yet implemented.")
+  stan_inputs <- make_stan_data(
+    data = data,
+    priors = priors
+  )
+  
+  structure(
+    list(
+      data = data,
+      priors = priors,
+      stan_inputs = stan_inputs
+    ),
+    class = "spawnest_fit"
+  )
 }
