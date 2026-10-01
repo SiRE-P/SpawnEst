@@ -7,9 +7,15 @@
 #'   a default value is estimated from the observed counts.
 #'
 #' @param arrival_peak Expected peak arrival date. If NULL,
-#'   a default value is estimated from the observed counts.
+#'   a default value is estimated using the survey-date
+#'   quantile specified by `arrival_quantile`.
+#' @param arrival_quantile Quantile of survey dates used to estimate
+#'   a default arrival peak date when `arrival_peak` is NULL.
+#'   Ignored when `arrival_peak` is supplied.
 #'
 #' @return A list containing prior specifications.
+#'
+#' @importFrom stats median sd quantile
 #'
 #' @export
 #' 
