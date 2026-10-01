@@ -4,33 +4,43 @@
 #' SpawnEst model.
 #'
 #' @param fit A fitted SpawnEst model.
-#' @param probs Lower and upper quantiles used to construct
-#'   credible intervals.
+#' @param CI Credible interval widths to report.
 #'
 #' @return A data frame containing annual abundance estimates.
 #'
 #' @export
-abundance <- function(fit, probs = c(0.025, 0.975)) {
+abundance <- function(fit, CI = c(66, 95)) {
   
   log_run_draws <- fit$fit$draws("log_run", format = "matrix")
   abundance_draws <- exp(log_run_draws)
   
-  qs <- t(apply(abundance_draws, 2, quantile,
-                probs = c(probs[1], 0.5, probs[2])))
-  
-  interval <- round(100 * (probs[2] - probs[1]))
-  
   out <- data.frame(
     year = fit$stan_inputs$year_lookup$year,
-    median = round(qs[, 2]),
-    lower = round(qs[, 1]),
-    upper = round(qs[, 3])
+    median = apply(abundance_draws, 2, median)
   )
   
-  names(out)[3:4] <- c(
-    paste0("lower_", interval),
-    paste0("upper_", interval)
-  )
+  for (ci in sort(unique(CI))) {
+    
+    alpha <- (1 - ci / 100) / 2
+    
+    qs <- t(apply(
+      abundance_draws,
+      2,
+      quantile,
+      probs = c(alpha, 1 - alpha)
+    ))
+    
+    out[[paste0("lower_", ci)]] <- qs[, 1]
+    out[[paste0("upper_", ci)]] <- qs[, 2]
+    
+  }
+  
+  lower_cols <- paste0("lower_", rev(sort(unique(CI))))
+  upper_cols <- paste0("upper_", sort(unique(CI)))
+  
+  out <- out[, c("year", lower_cols, "median", upper_cols)]
+  
+  out[-1] <- round(out[-1])
   
   rownames(out) <- NULL
   
