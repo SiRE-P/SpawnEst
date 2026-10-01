@@ -16,6 +16,11 @@
 #'   Ignored when `arrival_peak` is supplied.
 #' @param priors Additional model priors produced by
 #'   [default_priors()].
+#' 
+#' @param chains Number of MCMC chains.
+#' @param iter_warmup Number of warmup iterations per chain.
+#' @param iter_sampling Number of post-warmup iterations per chain.
+#' @param adapt_delta Stan adaptation target acceptance rate.
 #'
 #' @return A `spawnest_fit` object.
 #'
@@ -25,11 +30,12 @@ fit_spawner <- function(
     abundance = NULL,
     arrival_peak = NULL,
     arrival_quantile = 0.4,
-    priors = NULL
-) {
-  
-  if (!is.null(arrival_peak) & !missing(arrival_quantile))
-    warning("arrival_peak supplied; arrival_quantile ignored.")
+    priors = NULL,
+    chains = 4,
+    iter_warmup = 1000,
+    iter_sampling = 1000,
+    adapt_delta = 0.95
+){
   
   data <- validate_data(data)
   
@@ -46,8 +52,23 @@ fit_spawner <- function(
     priors = priors
   )
   
+  stan_file <- system.file("stan", "spawnest.stan", package = "SpawnEst")
+  
+  mod <- cmdstanr::cmdstan_model(stan_file)
+  
+  fit <- mod$sample(
+    data = stan_inputs$stan_data,
+    init = function() make_inits(stan_inputs$stan_data),
+    chains = chains,
+    parallel_chains = chains,
+    iter_warmup = iter_warmup,
+    iter_sampling = iter_sampling,
+    adapt_delta = adapt_delta
+  )
+  
   structure(
     list(
+      fit = fit,
       data = data,
       priors = priors,
       stan_inputs = stan_inputs
