@@ -4,9 +4,9 @@ data {
   int                    n_years;         // n years
   int                    n_obs;          // number of spawner count obs
   
-  int<lower=1, upper=n_years>     year[n_obs];
-  int                    day[n_obs];
-  int                    live_counts[n_obs]; //live spawner counts
+  array[n_obs] int<lower=1, upper=n_years> year;
+  array[n_obs] int day;
+  array[n_obs] int live_counts;
 }
 parameters {
   // MVN timing parameters
@@ -42,8 +42,8 @@ transformed parameters{
   vector[n_obs] live_mu; // predictions from model
   for(i in 1:n_obs){
     real mean_arrival = arrival[year[i]];
-    real entered = normal_cdf(day[i], mean_arrival, arrival_spread[year[i]]);  
-    real exited  = normal_cdf(day[i], mean_arrival + exit_lag[year[i]], exit_spread[year[i]]);
+    real entered = normal_cdf(day[i] | mean_arrival, arrival_spread[year[i]]);
+    real exited = normal_cdf(day[i] | mean_arrival + exit_lag[year[i]], exit_spread[year[i]]);
     real log_p    = log(fmin(fmax(entered * (1 - exited), 1e-5), 1.0));
     real log_mu   = log_run[year[i]] + log_p;
     
