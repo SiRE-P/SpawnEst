@@ -11,4 +11,4 @@ Description: Fits Bayesian models to repeated live-count surveys to estimate
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote:
+RoxygenNote: 7.3.3
