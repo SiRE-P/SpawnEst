@@ -18,26 +18,59 @@ timing <- function(fit, CI = c(66, 95), format = c("yday", "date")) {
   
   years <- fit$stan_inputs$year_lookup$year
   
-  arrival_peak <- fit$fit$draws("arrival", format = "matrix") +
-    fit$stan_inputs$day_stand
+  arrival <- fit$fit$draws("arrival", format = "matrix")
+  
+  arrival_peak <- arrival + fit$stan_inputs$day_stand
   
   arrival_spread <- fit$fit$draws("arrival_spread", format = "matrix")
   
-  residence <- fit$fit$draws("exit_lag", format = "matrix")
+  exit_lag <- fit$fit$draws("exit_lag", format = "matrix")
   
   exit_spread <- fit$fit$draws("exit_spread", format = "matrix")
+  
+  effective_residence <- matrix(
+    NA,
+    nrow = nrow(arrival),
+    ncol = ncol(arrival)
+  )
+  
+  max_day <- max(fit$stan_inputs$stan_data$day)
+  
+  for (j in seq_len(ncol(arrival))) {
+    
+    live <- sapply(seq_len(max_day), function(x) {
+      
+      entered <- stats::pnorm(
+        x,
+        arrival[, j],
+        arrival_spread[, j]
+      )
+      
+      exited <- stats::pnorm(
+        x,
+        arrival[, j] + exit_lag[, j],
+        exit_spread[, j]
+      )
+      
+      entered * (1 - exited)
+      
+    })
+    
+    effective_residence[, j] <- rowSums(live)
+    
+  }
   
   out <- list(
     arrival_peak = summarize_draws(arrival_peak, years, CI),
     arrival_spread = summarize_draws(arrival_spread, years, CI),
-    residence = summarize_draws(residence, years, CI),
+    effective_residence = summarize_draws(effective_residence, years, CI),
+    exit_lag = summarize_draws(exit_lag, years, CI),
     exit_spread = summarize_draws(exit_spread, years, CI)
   )
   
   if (format == "date") {
     
-    cols <- names(out$arrival_peak)
-    cols <- cols[cols != "year"]
+    cols <- setdiff(names(out$arrival_peak), "year")
     
     for (col in cols) {
       
