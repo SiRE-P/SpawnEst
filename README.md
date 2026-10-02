@@ -2,7 +2,7 @@
 
 `SpawnEst` implements the Bayesian spawner abundance estimation method described by Thompson et al. (2026) for estimating annual spawner abundance and run timing from repeated live-count surveys.
 
-The package is designed to support salmon stock assessment and escapement monitoring programs. Users provide survey dates and observed spawner counts and obtain annual estimates of spawner abundance, run timing, and associated uncertainty.
+The package is designed to support salmon stock assessment and escapement monitoring programs. Users provide survey dates and spawner counts and obtain estimates of annual abundance, run timing, effective residence time, and associated uncertainty.
 
 ## Installation
 
@@ -20,6 +20,7 @@ A typical analysis consists of:
 3. Fitting the model.
 4. Evaluating model diagnostics.
 5. Extracting abundance and timing estimates.
+6. Visualizing model outputs.
 
 ```r
 library(SpawnEst)
@@ -29,6 +30,12 @@ fit <- fit_spawner(counts)
 abundance(fit)
 
 timing(fit)
+
+plot_abundance(fit)
+
+plot_timing(fit)
+
+plot_run_curve(fit)
 ```
 
 ## Data Requirements
@@ -40,9 +47,17 @@ Input data must contain:
 | date | Survey date |
 | spawner_counts | Number of live spawners observed |
 
-An optional `reach` column may also be supplied for future multi-reach analyses.
+Optional columns:
 
-Example:
+| Variable | Description |
+|-----------|-------------|
+| observer_efficiency | Proportion of fish detected during a survey (0-1) |
+| coverage | Proportion of spawning habitat surveyed (0-1) |
+| stream | Stream identifier for future multi-stream analyses |
+
+If `observer_efficiency` or `coverage` are omitted, values of 1 are assumed.
+
+## Example Data
 
 ```r
 counts <- data.frame(
@@ -65,7 +80,7 @@ counts <- data.frame(
 )
 ```
 
-## Example
+## Basic Analysis
 
 Fit the model using automatically generated priors:
 
@@ -85,13 +100,65 @@ Extract annual timing estimates:
 timing(fit)
 ```
 
-Specify prior information:
+Plot fitted run curves against observed survey counts:
+
+```r
+plot_run_curve(fit)
+```
+
+Plot annual abundance estimates:
+
+```r
+plot_abundance(fit)
+```
+
+Plot annual timing estimates:
+
+```r
+plot_timing(fit)
+```
+
+## Traditional TAUC Comparison
+
+A traditional trapezoidal area-under-the-curve (TAUC) estimate can be calculated alongside SpawnEst estimates by specifying an assumed residence time (survey life).
+
+```r
+fit <- fit_spawner(
+  counts,
+  assumed_residence = 11
+)
+```
+
+The resulting abundance estimates include a TAUC comparison column:
+
+```r
+abundance(fit)
+```
+
+In abundance plots, TAUC estimates are displayed as red crosses.
+
+In timing plots, the assumed residence time is displayed as a dashed red line in the Effective Residence panel.
+
+## Prior Information
+
+Users may optionally specify prior information:
 
 ```r
 fit <- fit_spawner(
   counts,
   abundance = 50000,
   arrival_peak = 280
+)
+```
+
+or
+
+```r
+fit <- fit_spawner(
+  counts,
+  abundance = 50000,
+  arrival_peak = 280,
+  assumed_residence = 11
 )
 ```
 
@@ -103,4 +170,4 @@ This package is currently under active development.
 
 If you use `SpawnEst` in a publication, please cite:
 
-Thompson, P.L., Akenhead, S.A., and Louie, C. 2026. Bayesian estimation of spawner abundance and run timing from repeated live-count surveys. *Canadian Journal of Fisheries and Aquatic Sciences* 83: 1–13.
+Thompson, P.L., Akenhead, S.A., and Louie, C. 2026. *Bayesian estimation of spawner abundance and run timing from repeated live-count surveys*. Canadian Journal of Fisheries and Aquatic Sciences 83: 1–13.
