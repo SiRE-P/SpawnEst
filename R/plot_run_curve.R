@@ -3,11 +3,16 @@
 #' Plot posterior estimates of spawners present through time
 #' against observed survey counts for each year.
 #'
+#' Corrected survey counts used to fit the model are shown as
+#' filled points. If observer-efficiency or coverage corrections
+#' were applied, the original uncorrected survey counts are shown
+#' as open circles.
+#'
 #' @param fit A fitted SpawnEst model.
 #' @param CI Credible interval width to report.
 #'
-#' @return A ggplot object showing fitted run curves and
-#'   observed spawner counts by year.
+#' @return A ggplot object showing fitted run curves and observed
+#'   survey counts by year.
 #'
 #' @export
 plot_run_curve <- function(fit, CI = 95) {
@@ -76,7 +81,10 @@ plot_run_curve <- function(fit, CI = 95) {
       day = lubridate::yday(date)
     )
   
-  ggplot2::ggplot(
+  show_uncorrected <- "spawner_counts_uncorrected" %in% names(obs) &&
+    any(obs$spawner_counts_uncorrected != obs$spawner_counts)
+  
+  p <- ggplot2::ggplot(
     spawn_curves,
     ggplot2::aes(x = day, y = fish)
   ) +
@@ -87,10 +95,31 @@ plot_run_curve <- function(fit, CI = 95) {
     ggplot2::geom_line() +
     ggplot2::geom_point(
       data = obs,
-      ggplot2::aes(x = day, y = spawner_counts),
+      ggplot2::aes(
+        x = day,
+        y = spawner_counts
+      ),
       inherit.aes = FALSE,
-      size = 0.8
-    ) +
+      size = 1.2
+    )
+  
+  if (show_uncorrected) {
+    
+    p <- p +
+      ggplot2::geom_point(
+        data = obs,
+        ggplot2::aes(
+          x = day,
+          y = spawner_counts_uncorrected
+        ),
+        inherit.aes = FALSE,
+        shape = 1,
+        size = 2
+      )
+    
+  }
+  
+  p +
     ggplot2::facet_wrap(
       ~year,
       scales = "free_y"

@@ -3,8 +3,11 @@
 #' Fit the SpawnEst model to repeated spawner count surveys.
 #'
 #' The input data must contain a `date` column and a
-#' `spawner_counts` column. An optional `stream` column may
-#' be provided to fit multiple streams independently.
+#' `spawner_counts` column.
+#'
+#' Optional `observer_efficiency` and `coverage`
+#' columns may also be supplied. If omitted, both
+#' are assumed to equal 1.
 #'
 #' @param data A data frame containing survey observations.
 #' @param abundance Prior estimate of total spawner abundance.
@@ -55,6 +58,11 @@ fit_spawner <- function(
   }
   
   data <- validate_data(data)
+  
+  data$spawner_counts_uncorrected <- data$spawner_counts
+
+  data <- data |>
+    dplyr::mutate(spawner_counts = spawner_counts / observer_efficiency / coverage)
   
   TAUC <- compute_TAUC(
     data = data,

@@ -70,6 +70,32 @@ validate_data <- function(data) {
   if (dup)
     warning("Duplicate survey dates detected.", call. = FALSE)
   
+  if (!"observer_efficiency" %in% names(data))
+    data$observer_efficiency <- 1
+  
+  if (!"coverage" %in% names(data))
+    data$coverage <- 1
+  
+  if (any(is.na(data$observer_efficiency)))
+    stop("observer_efficiency contains missing values.", call. = FALSE)
+  
+  if (any(data$observer_efficiency <= 0 |
+          data$observer_efficiency > 1))
+    stop(
+      "observer_efficiency must be between 0 and 1.",
+      call. = FALSE
+    )
+  
+  if (any(is.na(data$coverage)))
+    stop("coverage contains missing values.", call. = FALSE)
+  
+  if (any(data$coverage <= 0 |
+          data$coverage > 1))
+    stop(
+      "coverage must be between 0 and 1.",
+      call. = FALSE
+    )
+  
   year_modes <- data |>
     dplyr::mutate(year = lubridate::year(date)) |>
     dplyr::group_by(year) |>
