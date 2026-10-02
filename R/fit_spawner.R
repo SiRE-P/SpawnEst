@@ -13,18 +13,20 @@
 #' @param abundance Prior estimate of total spawner abundance.
 #' @param assumed_residence Assumed mean residence time (days), also known as survey life.
 #'   If supplied, this value is used to construct the residence-time
-#'   prior and to calculate traditional trapezoidal area under the curve (TAUC) abundance estimates.
-#'   If NULL, the default SpawnEst residence-time prior is used and
-#'   TAUC estimates are not calculated.
+#'   prior and to calculate traditional trapezoidal area under the curve (TAUC)
+#'   abundance estimates. If NULL, the default SpawnEst residence-time prior
+#'   is used and TAUC estimates are not calculated.
 #' @param arrival_peak Expected peak arrival date. If NULL,
 #'   a default value is estimated using the survey-date
 #'   quantile specified by `arrival_quantile`.
 #' @param arrival_quantile Quantile of survey dates used to estimate
 #'   a default arrival peak date when `arrival_peak` is NULL.
 #'   Ignored when `arrival_peak` is supplied.
+#' @param trim_zeros Logical. Remove repeated leading and trailing
+#'   zero-count surveys within years while retaining a single zero
+#'   on either side of the run.
 #' @param priors Additional model priors produced by
 #'   [default_priors()].
-#' 
 #' @param chains Number of MCMC chains.
 #' @param iter_warmup Number of warmup iterations per chain.
 #' @param iter_sampling Number of post-warmup iterations per chain.
@@ -39,12 +41,37 @@ fit_spawner <- function(
     assumed_residence = NULL,
     arrival_peak = NULL,
     arrival_quantile = 0.4,
+    trim_zeros = TRUE,
     priors = NULL,
     chains = 4,
     iter_warmup = 1000,
     iter_sampling = 1000,
     adapt_delta = 0.95
-){
+) {
+  
+  trim_repeated_zeros <- function(x) {
+    
+    pos <- which(x > 0)
+    
+    if (length(pos) == 0)
+      return(rep(TRUE, length(x)))
+    
+    first_pos <- min(pos)
+    last_pos <- max(pos)
+    
+    keep <- rep(TRUE, length(x))
+    
+    # Keep at most one leading zero
+    if (first_pos > 2)
+      keep[1:(first_pos - 2)] <- FALSE
+    
+    # Keep at most one trailing zero
+    if (last_pos < (length(x) - 1))
+      keep[(last_pos + 2):length(x)] <- FALSE
+    
+    keep
+    
+  }
   
   if (!is.null(assumed_residence)) {
     
@@ -55,14 +82,44 @@ fit_spawner <- function(
         "assumed_residence must be a single numeric value greater than 1.",
         call. = FALSE
       )
+    
   }
   
   data <- validate_data(data)
   
+  if (trim_zeros) {
+    
+    n_before <- nrow(data)
+    
+    data <- data |>
+      dplyr::mutate(year = lubridate::year(date)) |>
+      dplyr::group_by(year) |>
+      dplyr::arrange(date, .by_group = TRUE) |>
+      dplyr::filter(
+        trim_repeated_zeros(spawner_counts)
+      ) |>
+      dplyr::ungroup() |>
+      dplyr::select(-year)
+    
+    n_removed <- n_before - nrow(data)
+    
+    if (n_removed > 0)
+      message(
+        n_removed,
+        " repeated leading/trailing zero-count surveys removed."
+      )
+    
+  }
+  
   data$spawner_counts_uncorrected <- data$spawner_counts
-
+  
   data <- data |>
-    dplyr::mutate(spawner_counts = spawner_counts / observer_efficiency / coverage)
+    dplyr::mutate(
+      spawner_counts =
+        spawner_counts /
+        observer_efficiency /
+        coverage
+    )
   
   TAUC <- compute_TAUC(
     data = data,
@@ -71,7 +128,7 @@ fit_spawner <- function(
   
   if (is.null(priors))
     priors <- default_priors(
-      data = data, 
+      data = data,
       abundance = abundance,
       assumed_residence = assumed_residence,
       arrival_peak = arrival_peak,
@@ -83,7 +140,11 @@ fit_spawner <- function(
     priors = priors
   )
   
-  stan_file <- system.file("stan", "spawnest.stan", package = "SpawnEst")
+  stan_file <- system.file(
+    "stan",
+    "spawnest.stan",
+    package = "SpawnEst"
+  )
   
   mod <- cmdstanr::cmdstan_model(stan_file)
   
@@ -108,4 +169,5 @@ fit_spawner <- function(
     ),
     class = "spawnest_fit"
   )
+  
 }

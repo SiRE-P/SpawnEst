@@ -14,12 +14,31 @@ validate_data <- function(data) {
     stop(paste0("Missing required column(s): ", paste(missing_cols, collapse = ", ")), call. = FALSE)
   
   if (!inherits(data$date, "Date")) {
-    data$date <- as.Date(as.character(data$date))
+    
+    data$date <- suppressWarnings(
+      lubridate::parse_date_time(
+        data$date,
+        orders = c(
+          "ymd",
+          "mdy",
+          "dmy",
+          "d-b-y",
+          "d-b-Y",
+          "d B y",
+          "d B Y"
+        )
+      )
+    )
+    
+    data$date <- as.Date(data$date)
     
     if (any(is.na(data$date)))
-      stop("date could not be converted to Date format.", call. = FALSE)
+      stop(
+        "date could not be converted to Date format.",
+        call. = FALSE
+      )
+    
   }
-  
   if (length(unique(data$date)) < 2)
     stop("At least two survey dates are required.", call. = FALSE)
   
@@ -76,21 +95,64 @@ validate_data <- function(data) {
   if (!"coverage" %in% names(data))
     data$coverage <- 1
   
-  if (any(is.na(data$observer_efficiency)))
-    stop("observer_efficiency contains missing values.", call. = FALSE)
+  # Convert percent strings to numeric
+  if (is.character(data$observer_efficiency))
+    data$observer_efficiency <-
+    as.numeric(gsub("%", "", data$observer_efficiency))
   
-  if (any(data$observer_efficiency <= 0 |
-          data$observer_efficiency > 1))
+  if (is.character(data$coverage))
+    data$coverage <-
+    as.numeric(gsub("%", "", data$coverage))
+  
+  # Convert percentages to proportions
+  if (max(data$observer_efficiency, na.rm = TRUE) > 1)
+    data$observer_efficiency <-
+    data$observer_efficiency / 100
+  
+  if (max(data$coverage, na.rm = TRUE) > 1)
+    data$coverage <-
+    data$coverage / 100
+  
+  # Assume missing values equal 1
+  if (any(is.na(data$observer_efficiency))) {
+    
+    warning(
+      "Missing observer_efficiency values were assumed to equal 1.",
+      call. = FALSE
+    )
+    
+    data$observer_efficiency[
+      is.na(data$observer_efficiency)
+    ] <- 1
+    
+  }
+  
+  if (any(is.na(data$coverage))) {
+    
+    warning(
+      "Missing coverage values were assumed to equal 1.",
+      call. = FALSE
+    )
+    
+    data$coverage[
+      is.na(data$coverage)
+    ] <- 1
+    
+  }
+  
+  if (any(
+    data$observer_efficiency <= 0 |
+    data$observer_efficiency > 1
+  ))
     stop(
       "observer_efficiency must be between 0 and 1.",
       call. = FALSE
     )
   
-  if (any(is.na(data$coverage)))
-    stop("coverage contains missing values.", call. = FALSE)
-  
-  if (any(data$coverage <= 0 |
-          data$coverage > 1))
+  if (any(
+    data$coverage <= 0 |
+    data$coverage > 1
+  ))
     stop(
       "coverage must be between 0 and 1.",
       call. = FALSE

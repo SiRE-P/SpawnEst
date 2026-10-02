@@ -10,6 +10,32 @@ The package is designed to support salmon stock assessment and escapement monito
 # install.packages("remotes")
 remotes::install_github("SiRE-P/SpawnEst")
 ```
+## Prerequisites
+
+SpawnEst uses `cmdstanr` and requires a local installation of CmdStan.
+
+Install `cmdstanr`:
+
+```r
+install.packages(
+  "cmdstanr",
+  repos = c(
+    "https://mc-stan.org/r-packages/",
+    getOption("repos")
+  )
+)
+```
+
+Then follow the official CmdStan installation instructions:
+
+[CmdStan Installation Guide](https://mc-stan.org/docs/cmdstan-guide/installation.html)
+
+Verify the installation:
+
+```r
+cmdstanr::cmdstan_version()
+```
+
 
 ## Workflow
 

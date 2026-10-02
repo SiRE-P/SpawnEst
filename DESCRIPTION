@@ -18,3 +18,5 @@ Imports:
     ggplot2,
     lubridate,
     scales
+Remotes:
+stan-dev/cmdstanr
