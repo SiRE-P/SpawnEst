@@ -6,7 +6,9 @@
 #' @param CI Credible interval widths to report.
 #' @param format Either `"yday"` or `"date"`.
 #'
-#' @return A ggplot object.
+#' @return A ggplot object. If an assumed residence time was
+#' supplied during fitting, it is shown as a dashed horizontal
+#' line in the Effective Residence panel.
 #'
 #' @export
 plot_timing <- function(fit, CI = c(66, 95), format = c("yday", "date")) {
@@ -30,6 +32,13 @@ plot_timing <- function(fit, CI = c(66, 95), format = c("yday", "date")) {
     dplyr::mutate(tm$effective_residence, parameter = "Effective residence"),
     dplyr::mutate(tm$exit_lag, parameter = "Exit lag")
   )
+  
+  if (!is.null(fit$assumed_residence)) {
+    residence_line <- data.frame(
+      parameter = "Effective residence",
+      yintercept = fit$assumed_residence
+    )
+  }
   
   dat$parameter <- factor(
     dat$parameter,
@@ -66,7 +75,7 @@ plot_timing <- function(fit, CI = c(66, 95), format = c("yday", "date")) {
   
   yrs <- unique(dat$year)
   
-  p +
+  p <- p +
     ggplot2::geom_point(size = 2) +
     ggplot2::facet_wrap(
       ~parameter,
@@ -85,5 +94,19 @@ plot_timing <- function(fit, CI = c(66, 95), format = c("yday", "date")) {
       x = NULL,
       y = NULL
     )
+  
+  if (!is.null(fit$assumed_residence)) {
+    
+    p <- p +
+      ggplot2::geom_hline(
+        data = residence_line,
+        ggplot2::aes(yintercept = yintercept),
+        linetype = 2,
+        colour = "red",
+        inherit.aes = FALSE
+      )
+  }
+  
+  p
   
 }

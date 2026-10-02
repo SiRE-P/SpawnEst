@@ -3,7 +3,8 @@
 #' @param fit A fitted SpawnEst model.
 #' @param CI Credible interval widths to show
 #'
-#' @return A ggplot object.
+#' @return A ggplot object. If traditional TAUC abundance
+#' estimates are available, these are shown as red crosses.
 #'
 #' @export
 plot_abundance <- function(fit, CI = c(66, 95)) {
@@ -37,7 +38,7 @@ plot_abundance <- function(fit, CI = c(66, 95)) {
   
   yrs <- abund$year
   
-  p +
+  p <- p +
     ggplot2::geom_point(size = 2) +
     ggplot2::theme_bw() +
     ggplot2::scale_x_continuous(
@@ -56,5 +57,22 @@ plot_abundance <- function(fit, CI = c(66, 95)) {
       x = NULL,
       y = "Spawners"
     )
+  
+  if ("TAUC" %in% names(abund)) {
+    
+    p <- p +
+      ggplot2::geom_point(
+        ggplot2::aes(y = TAUC),
+        colour = "red",
+        shape = 4,
+        size = 2
+      ) +
+      ggplot2::labs(
+        caption = "Red X = traditional TAUC estimate"
+      )
+    
+  }
+  
+  p
   
 }

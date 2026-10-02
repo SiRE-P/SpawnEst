@@ -7,6 +7,8 @@
 #' @param CI Credible interval widths to report.
 #'
 #' @return A data frame containing annual abundance estimates.
+#' If an assumed residence time was supplied when fitting the
+#' model, traditional TAUC abundance estimates are also returned.
 #'
 #' @export
 abundance <- function(fit, CI = c(66, 95)) {
@@ -23,4 +25,17 @@ abundance <- function(fit, CI = c(66, 95)) {
     years = fit$stan_inputs$year_lookup$year,
     CI = CI
   )
+  
+  out <- summarize_draws(
+    abundance_draws,
+    fit$stan_inputs$year_lookup$year,
+    CI
+  )
+  
+  if (!is.null(fit$TAUC))
+    out <- dplyr::left_join(
+      out,
+      fit$TAUC,
+      by = "year"
+    )
 }

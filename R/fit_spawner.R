@@ -8,6 +8,11 @@
 #'
 #' @param data A data frame containing survey observations.
 #' @param abundance Prior estimate of total spawner abundance.
+#' @param assumed_residence Assumed mean residence time (days), also known as survey life.
+#'   If supplied, this value is used to construct the residence-time
+#'   prior and to calculate traditional trapezoidal area under the curve (TAUC) abundance estimates.
+#'   If NULL, the default SpawnEst residence-time prior is used and
+#'   TAUC estimates are not calculated.
 #' @param arrival_peak Expected peak arrival date. If NULL,
 #'   a default value is estimated using the survey-date
 #'   quantile specified by `arrival_quantile`.
@@ -28,6 +33,7 @@
 fit_spawner <- function(
     data,
     abundance = NULL,
+    assumed_residence = NULL,
     arrival_peak = NULL,
     arrival_quantile = 0.4,
     priors = NULL,
@@ -37,12 +43,29 @@ fit_spawner <- function(
     adapt_delta = 0.95
 ){
   
+  if (!is.null(assumed_residence)) {
+    
+    if (!is.numeric(assumed_residence) ||
+        length(assumed_residence) != 1 ||
+        assumed_residence <= 1)
+      stop(
+        "assumed_residence must be a single numeric value greater than 1.",
+        call. = FALSE
+      )
+  }
+  
   data <- validate_data(data)
+  
+  TAUC <- compute_TAUC(
+    data = data,
+    assumed_residence = assumed_residence
+  )
   
   if (is.null(priors))
     priors <- default_priors(
-      data = data,
+      data = data, 
       abundance = abundance,
+      assumed_residence = assumed_residence,
       arrival_peak = arrival_peak,
       arrival_quantile = arrival_quantile
     )
@@ -71,7 +94,9 @@ fit_spawner <- function(
       fit = fit,
       data = data,
       priors = priors,
-      stan_inputs = stan_inputs
+      stan_inputs = stan_inputs,
+      assumed_residence = assumed_residence,
+      TAUC = TAUC
     ),
     class = "spawnest_fit"
   )
