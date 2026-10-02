@@ -88,6 +88,11 @@ Fit the model using automatically generated priors:
 fit <- fit_spawner(counts)
 ```
 
+Check model diagnostics
+```r
+diagnostics(fit)
+```
+
 Extract annual abundance estimates:
 
 ```r
