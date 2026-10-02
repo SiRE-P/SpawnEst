@@ -55,7 +55,7 @@ default_priors <- function(data, abundance = NULL, assumed_residence = NULL, arr
     abundance = list(mean = abundance, sdlog = abundance_sdlog),
     arrival_peak = list(mean = arrival_peak, sd = arrival_peak_sd),
     arrival_sigma = list(mean = 2, sd = 0.2),
-    spread = list(mean = log(3), sd = 0.2),
+    spread = list(mean = 2, sd = 0.2),
     spread_sigma = list(mean = 0.5, sd = 0.25),
     residence = list( mean = residence_mean, sd = 0.2),
     count_dispersion = list(mean = log(20), sd = 0.5)
