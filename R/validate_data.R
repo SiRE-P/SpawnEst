@@ -114,14 +114,16 @@ validate_data <- function(data) {
           
           peak_sep <- diff(sort(peak_days))
           
+          # Count only peaks separated by at least 10 days.
+          # This avoids flagging small wiggles around a dominant peak.
+
           n_major_peaks <- 1 + sum(peak_sep >= 10)
           
         }
         
       } else {
         
-        n_major_peaks <- length(peak_ind)
-        
+        n_major_peaks <- 1
       }
       
       data.frame(n_major_peaks = n_major_peaks)
