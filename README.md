@@ -106,6 +106,21 @@ counts <- data.frame(
 )
 ```
 
+## Data Template
+Create a template csv file in the current working directory:
+
+```r
+template_file()
+```
+
+This creates:
+
+```text
+spawnest_template.csv
+```
+
+containing the required and optional input columns.
+
 ## Basic Analysis
 
 Fit the model using automatically generated priors:

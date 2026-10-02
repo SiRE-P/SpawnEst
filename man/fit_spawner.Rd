@@ -10,6 +10,7 @@ fit_spawner(
   assumed_residence = NULL,
   arrival_peak = NULL,
   arrival_quantile = 0.4,
+  trim_zeros = TRUE,
   priors = NULL,
   chains = 4,
   iter_warmup = 1000,
@@ -24,9 +25,9 @@ fit_spawner(
 
 \item{assumed_residence}{Assumed mean residence time (days), also known as survey life.
 If supplied, this value is used to construct the residence-time
-prior and to calculate traditional trapezoidal area under the curve (TAUC) abundance estimates.
-If NULL, the default SpawnEst residence-time prior is used and
-TAUC estimates are not calculated.}
+prior and to calculate traditional trapezoidal area under the curve (TAUC)
+abundance estimates. If NULL, the default SpawnEst residence-time prior
+is used and TAUC estimates are not calculated.}
 
 \item{arrival_peak}{Expected peak arrival date. If NULL,
 a default value is estimated using the survey-date
@@ -35,6 +36,10 @@ quantile specified by \code{arrival_quantile}.}
 \item{arrival_quantile}{Quantile of survey dates used to estimate
 a default arrival peak date when \code{arrival_peak} is NULL.
 Ignored when \code{arrival_peak} is supplied.}
+
+\item{trim_zeros}{Logical. Remove repeated leading and trailing
+zero-count surveys within years while retaining a single zero
+on either side of the run.}
 
 \item{priors}{Additional model priors produced by
 \code{\link[=default_priors]{default_priors()}}.}
