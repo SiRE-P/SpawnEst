@@ -115,6 +115,9 @@ plot_run_curve <- function(fit, CI = 95) {
         inherit.aes = FALSE,
         shape = 1,
         size = 2
+      )+
+      ggplot2::labs(
+        caption = "Open circles show uncorrected survey counts."
       )
     
   }
