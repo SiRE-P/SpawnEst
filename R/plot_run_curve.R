@@ -117,7 +117,10 @@ plot_run_curve <- function(fit, CI = 95) {
         size = 2
       )+
       ggplot2::labs(
-        caption = "Open circles show uncorrected survey counts."
+        caption = paste(
+          "Open circles show uncorrected survey counts.",
+          "Filled points show counts after observer-efficiency and coverage corrections."
+        )
       )
     
   }
