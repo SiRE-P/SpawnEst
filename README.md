@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="man/figures/logo.pngpawnBayes
+  man/figures/logo.png
+</p>
+
+# SpawnBayes
 
 `SpawnBayes` implements the Bayesian spawner abundance estimation method described by Thompson et al. (2026) for estimating annual spawner abundance and run timing from repeated live-count surveys.
 
