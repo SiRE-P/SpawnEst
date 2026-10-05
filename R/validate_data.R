@@ -1,4 +1,3 @@
-R
 #' Validate spawnBayes input data
 #'
 #' @param data Input data frame.
