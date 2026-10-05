@@ -146,7 +146,7 @@ Estimated annual abundance is obtained by integrating the estimated arrival and 
 
 ```{r abundance}
 abund <- abundance(fit)
-abund
+knitr::kable(abund)
 ```
 
 The abundance plot shows the median (point) as well as the 66 and 95% posterior credible intervals. The red x shows the estimate based on trapezoidal area under the curve, with an assumed 15.5 day residence (survey life).
