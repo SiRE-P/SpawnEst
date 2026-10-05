@@ -46,6 +46,7 @@ fit_spawner <- function(
     chains = 4,
     iter_warmup = 1000,
     iter_sampling = 1000,
+    refresh = 100, 
     adapt_delta = 0.95
 ) {
   
@@ -155,7 +156,8 @@ fit_spawner <- function(
     parallel_chains = chains,
     iter_warmup = iter_warmup,
     iter_sampling = iter_sampling,
-    adapt_delta = adapt_delta
+    adapt_delta = adapt_delta, 
+    refresh = refresh
   )
   
   structure(
