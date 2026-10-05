@@ -6,7 +6,12 @@
 \usage{
 validate_data(data)
 }
+\arguments{
+\item{data}{Input data frame.}
+}
+\value{
+A validated and standardized data frame.
+}
 \description{
 Validate spawnBayes input data
 }
-\keyword{internal}
