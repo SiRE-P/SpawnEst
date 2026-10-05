@@ -31,6 +31,7 @@
 #' @param iter_warmup Number of warmup iterations per chain.
 #' @param iter_sampling Number of post-warmup iterations per chain.
 #' @param adapt_delta Stan adaptation target acceptance rate.
+#' @param refresh refresh Frequency of CmdStan progress updates.
 #'
 #' @return A `spawnBayes_fit` object.
 #'

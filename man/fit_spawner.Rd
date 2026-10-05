@@ -15,6 +15,7 @@ fit_spawner(
   chains = 4,
   iter_warmup = 1000,
   iter_sampling = 1000,
+  refresh = 100,
   adapt_delta = 0.95
 )
 }
@@ -49,6 +50,8 @@ on either side of the run.}
 \item{iter_warmup}{Number of warmup iterations per chain.}
 
 \item{iter_sampling}{Number of post-warmup iterations per chain.}
+
+\item{refresh}{refresh Frequency of CmdStan progress updates.}
 
 \item{adapt_delta}{Stan adaptation target acceptance rate.}
 }
