@@ -50,3 +50,4 @@ rsconnect/
 
 inst/stan/*.exe
 
+inst/doc
