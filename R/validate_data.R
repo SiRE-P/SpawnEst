@@ -1,6 +1,11 @@
+R
 #' Validate spawnBayes input data
 #'
-#' @keywords internal
+#' @param data Input data frame.
+#'
+#' @return A validated and standardized data frame.
+#'
+#' @export
 validate_data <- function(data) {
   
   if (!is.data.frame(data))
