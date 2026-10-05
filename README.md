@@ -1,8 +1,14 @@
 # spawnBayes <img src="man/figures/logo.png" align="right" height="160"/></a>
 
-`spawnBayes` implements the Bayesian spawner abundance estimation method described by Thompson et al. (2026) for estimating annual spawner abundance and run timing from repeated live-count surveys.
+`spawnBayes estimates salmon spawner abundance and run timing estimated from repeated
+live-count surveys. Unlike traditional area-under-the-curve approaches,
+`spawnBayes` estimates abundance, run timing, and their associated
+uncertainty while allowing residence time to vary among years.
 
-The package is designed to support salmon stock assessment and escapement monitoring programs. Users provide survey dates and spawner counts and obtain estimates of annual abundance, run timing, effective residence time, and associated uncertainty.
+The package is designed to support salmon stock assessment and escapement
+monitoring programs. Users provide survey dates and spawner counts and
+obtain estimates of annual abundance, run timing, effective residence
+time, and associated uncertainty.
 
 ## Installation
 
@@ -10,9 +16,10 @@ The package is designed to support salmon stock assessment and escapement monito
 # install.packages("remotes")
 remotes::install_github("SiRE-P/spawnBayes")
 ```
+
 ## Prerequisites
 
-spawnBayes uses `cmdstanr` and requires a local installation of CmdStan.
+`spawnBayes` uses `cmdstanr` and requires a local installation of CmdStan.
 
 Install `cmdstanr`:
 
@@ -26,9 +33,9 @@ install.packages(
 )
 ```
 
-Then follow the official CmdStan installation instructions:
+Then follow the official CmdStan installation guide:
 
-[CmdStan Installation Guide](https://mc-stan.org/docs/cmdstan-guide/installation.html)
+https://mc-stan.org/docs/cmdstan-guide/installation.html
 
 Verify the installation:
 
@@ -36,78 +43,69 @@ Verify the installation:
 cmdstanr::cmdstan_version()
 ```
 
-
-## Workflow
-
-A typical analysis consists of:
-
-1. Preparing survey data.
-2. Specifying prior information (optional).
-3. Fitting the model.
-4. Evaluating model diagnostics.
-5. Extracting abundance and timing estimates.
-6. Visualizing model outputs.
-
-```r
-library(spawnBayes)
-
-fit <- fit_spawner(counts)
-
-abundance(fit)
-
-timing(fit)
-
-plot_abundance(fit)
-
-plot_timing(fit)
-
-plot_run_curve(fit)
-```
-
 ## Data Requirements
 
-Input data must contain:
+Required columns:
 
 | Variable | Description |
 |-----------|-------------|
-| date | Survey date |
-| spawner_counts | Number of live spawners observed |
+| `date` | Survey date |
+| `spawner_counts` | Number of live spawners observed |
 
 Optional columns:
 
 | Variable | Description |
 |-----------|-------------|
-| observer_efficiency | Proportion of fish detected during a survey (0-1) |
-| coverage | Proportion of spawning habitat surveyed (0-1) |
-| stream | Stream identifier for future multi-stream analyses |
+| `observer_efficiency` | Proportion of fish detected during a survey (0-1) |
+| `coverage` | Proportion of spawning habitat surveyed (0-1) |
 
 If `observer_efficiency` or `coverage` are omitted, values of 1 are assumed.
 
-## Example Data
+## Quick Example
 
 ```r
-counts <- data.frame(
-  date = as.Date(c(
-    "2020-09-01",
-    "2020-09-10",
-    "2020-09-20",
-    "2021-09-05",
-    "2021-09-15",
-    "2021-09-25"
-  )),
-  spawner_counts = c(
-    150,
-    320,
-    180,
-    175,
-    340,
-    210
-  )
+library(spawnBayes)
+
+data(clemens_sockeye)
+
+fit <- fit_spawner(
+  clemens_sockeye,
+  assumed_residence = 15.5
 )
+
+plot_run_curve(fit)
+```
+
+Estimate annual abundance:
+
+```r
+abundance(fit)
+```
+
+Estimate run timing:
+
+```r
+timing(fit)
+```
+
+## Worked Example
+
+A complete analysis using Clemens Creek Sockeye salmon data is provided
+in the package vignette:
+
+```r
+browseVignettes("spawnBayes")
+```
+
+or
+
+```r
+vignette("clemens-creek-sockeye", package = "spawnBayes")
 ```
 
 ## Data Template
-Create a template csv file in the current working directory:
+
+Create a template CSV file in the current working directory:
 
 ```r
 template_file()
@@ -121,99 +119,12 @@ spawnBayes_template.csv
 
 containing the required and optional input columns.
 
-## Basic Analysis
-
-Fit the model using automatically generated priors:
-
-```r
-fit <- fit_spawner(counts)
-```
-
-Check model diagnostics
-```r
-diagnostics(fit)
-```
-
-Extract annual abundance estimates:
-
-```r
-abundance(fit)
-```
-
-Extract annual timing estimates:
-
-```r
-timing(fit)
-```
-
-Plot fitted run curves against observed survey counts:
-
-```r
-plot_run_curve(fit)
-```
-
-Plot annual abundance estimates:
-
-```r
-plot_abundance(fit)
-```
-
-Plot annual timing estimates:
-
-```r
-plot_timing(fit)
-```
-
-## Traditional TAUC Comparison
-
-A traditional trapezoidal area-under-the-curve (TAUC) estimate can be calculated alongside spawnBayes estimates by specifying an assumed residence time (survey life).
-
-```r
-fit <- fit_spawner(
-  counts,
-  assumed_residence = 11
-)
-```
-
-The resulting abundance estimates include a TAUC comparison column:
-
-```r
-abundance(fit)
-```
-
-In abundance plots, TAUC estimates are displayed as red crosses.
-
-In timing plots, the assumed residence time is displayed as a dashed red line in the Effective Residence panel.
-
-## Prior Information
-
-Users may optionally specify prior information:
-
-```r
-fit <- fit_spawner(
-  counts,
-  abundance = 50000,
-  arrival_peak = 280
-)
-```
-
-or
-
-```r
-fit <- fit_spawner(
-  counts,
-  abundance = 50000,
-  arrival_peak = 280,
-  assumed_residence = 11
-)
-```
-
-## Development Status
-
-This package is currently under active development.
-
 ## Citation
 
 If you use `spawnBayes` in a publication, please cite:
 
-Thompson, P.L., Akenhead, S.A., and Louie, C. 2026. *Bayesian estimation of spawner abundance and run timing from repeated live-count surveys*. Canadian Journal of Fisheries and Aquatic Sciences 83: 1–13.
+Thompson, P. L., Akenhead, S. A., and Louie, C. (2026).
+*Estimating spawning salmon abundance from visual surveys: a hierarchical
+model of arrival and exit dynamics*.
+Canadian Journal of Fisheries and Aquatic Sciences, 83, 1-13.
+https://doi.org/10.1139/cjfas-2026-0029
