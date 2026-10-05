@@ -1,6 +1,4 @@
-<p align="center">
-  man/figures/logo.png
-</p>
+<img src = 'man/figures/logo.png' height = '180' align="right" />
 
 # SpawnBayes
 
