@@ -7,7 +7,7 @@
 plot_run_curve(fit, CI = 95)
 }
 \arguments{
-\item{fit}{A fitted SpawnEst model.}
+\item{fit}{A fitted spawnBayes model.}
 
 \item{CI}{Credible interval width to report.}
 }

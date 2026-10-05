@@ -1,9 +1,9 @@
 #' Summarize model diagnostics
 #'
 #' Summarize MCMC convergence diagnostics for a fitted
-#' SpawnEst model.
+#' spawnBayes model.
 #'
-#' @param fit A fitted SpawnEst model.
+#' @param fit A fitted spawnBayes model.
 #'
 #' @return A data frame containing convergence diagnostics and
 #'   recommended actions if problems are detected.
@@ -11,8 +11,8 @@
 #' @export
 diagnostics <- function(fit) {
   
-  if (!inherits(fit, "spawnest_fit"))
-    stop("fit must be a spawnest_fit object.", call. = FALSE)
+  if (!inherits(fit, "spawnBayes_fit"))
+    stop("fit must be a spawnBayes_fit object.", call. = FALSE)
   
   fit_summary <- fit$fit$summary()
   

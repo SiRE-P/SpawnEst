@@ -1,4 +1,4 @@
-#' Validate SpawnEst input data
+#' Validate spawnBayes input data
 #'
 #' @keywords internal
 validate_data <- function(data) {
@@ -226,7 +226,7 @@ validate_data <- function(data) {
         n_multimodal,
         " of ",
         nrow(year_modes),
-        " years. SpawnEst assumes a single run peak."
+        " years. spawnBayes assumes a single run peak."
       ),
       call. = FALSE
     )

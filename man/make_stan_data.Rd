@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_stan_data.R
 \name{make_stan_data}
 \alias{make_stan_data}
-\title{Construct Stan data for SpawnEst}
+\title{Construct Stan data for spawnBayes}
 \usage{
 make_stan_data(data, priors)
 }
@@ -22,6 +22,6 @@ A list containing:
 }
 \description{
 Convert validated survey data and prior specifications into
-the data list required by the SpawnEst Stan model.
+the data list required by the spawnBayes Stan model.
 }
 \keyword{internal}

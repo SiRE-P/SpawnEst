@@ -1,14 +1,14 @@
-#' Create a SpawnEst data template
+#' Create a spawnBayes data template
 #'
 #' Create a csv template illustrating the expected
-#' input data structure for SpawnEst.
+#' input data structure for spawnBayes.
 #'
 #' @param file Output file name.
 #'
 #' @return The path to the created file.
 #'
 #' @export
-template_file <- function(file = "spawnest_template.csv") {
+template_file <- function(file = "spawnBayes_template.csv") {
   
   template <- data.frame(
     date = c(

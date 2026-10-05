@@ -7,7 +7,7 @@
 abundance(fit, CI = c(66, 95))
 }
 \arguments{
-\item{fit}{A fitted SpawnEst model.}
+\item{fit}{A fitted spawnBayes model.}
 
 \item{CI}{Credible interval widths to report.}
 }
@@ -18,5 +18,5 @@ model, traditional TAUC abundance estimates are also returned.
 }
 \description{
 Extract annual spawner abundance estimates from a fitted
-SpawnEst model.
+spawnBayes model.
 }

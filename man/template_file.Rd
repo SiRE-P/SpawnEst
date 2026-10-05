@@ -2,9 +2,9 @@
 % Please edit documentation in R/template_file.R
 \name{template_file}
 \alias{template_file}
-\title{Create a SpawnEst data template}
+\title{Create a spawnBayes data template}
 \usage{
-template_file(file = "spawnest_template.csv")
+template_file(file = "spawnBayes_template.csv")
 }
 \arguments{
 \item{file}{Output file name.}
@@ -14,5 +14,5 @@ The path to the created file.
 }
 \description{
 Create a csv template illustrating the expected
-input data structure for SpawnEst.
+input data structure for spawnBayes.
 }

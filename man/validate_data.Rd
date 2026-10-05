@@ -2,11 +2,11 @@
 % Please edit documentation in R/validate_data.R
 \name{validate_data}
 \alias{validate_data}
-\title{Validate SpawnEst input data}
+\title{Validate spawnBayes input data}
 \usage{
 validate_data(data)
 }
 \description{
-Validate SpawnEst input data
+Validate spawnBayes input data
 }
 \keyword{internal}

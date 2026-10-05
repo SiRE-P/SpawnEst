@@ -1,9 +1,9 @@
 #' Extract abundance estimates
 #'
 #' Extract annual spawner abundance estimates from a fitted
-#' SpawnEst model.
+#' spawnBayes model.
 #'
-#' @param fit A fitted SpawnEst model.
+#' @param fit A fitted spawnBayes model.
 #' @param CI Credible interval widths to report.
 #'
 #' @return A data frame containing annual abundance estimates.
@@ -13,8 +13,8 @@
 #' @export
 abundance <- function(fit, CI = c(66, 95)) {
   
-  if (!inherits(fit, "spawnest_fit"))
-    stop("fit must be a spawnest_fit object.", call. = FALSE)
+  if (!inherits(fit, "spawnBayes_fit"))
+    stop("fit must be a spawnBayes_fit object.", call. = FALSE)
   
  
     log_run_draws <- fit$fit$draws("log_run", format = "matrix")

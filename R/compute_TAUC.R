@@ -11,7 +11,7 @@
 #' @param data A data frame containing survey observations.
 #' @param assumed_residence Assumed mean residence time (days).
 #'
-#' @return A `spawnest_fit` object containing:
+#' @return A `spawnBayes_fit` object containing:
 #' \describe{
 #'   \item{fit}{CmdStanMCMC model fit.}
 #'   \item{data}{Input data used for fitting.}

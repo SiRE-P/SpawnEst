@@ -7,7 +7,7 @@
 plot_abundance(fit, CI = c(66, 95))
 }
 \arguments{
-\item{fit}{A fitted SpawnEst model.}
+\item{fit}{A fitted spawnBayes model.}
 
 \item{CI}{Credible interval widths to show}
 }

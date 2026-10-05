@@ -1,6 +1,6 @@
 #' Plot abundance estimates
 #'
-#' @param fit A fitted SpawnEst model.
+#' @param fit A fitted spawnBayes model.
 #' @param CI Credible interval widths to show
 #'
 #' @return A ggplot object. If traditional TAUC abundance
@@ -9,8 +9,8 @@
 #' @export
 plot_abundance <- function(fit, CI = c(66, 95)) {
   
-  if (!inherits(fit, "spawnest_fit"))
-    stop("fit must be a spawnest_fit object.", call. = FALSE)
+  if (!inherits(fit, "spawnBayes_fit"))
+    stop("fit must be a spawnBayes_fit object.", call. = FALSE)
   
   abund <- abundance(fit, CI = CI)
   

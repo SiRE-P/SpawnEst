@@ -1,6 +1,6 @@
 #' Fit a spawner abundance model
 #'
-#' Fit the SpawnEst model to repeated spawner count surveys.
+#' Fit the spawnBayes model to repeated spawner count surveys.
 #'
 #' The input data must contain a `date` column and a
 #' `spawner_counts` column.
@@ -14,7 +14,7 @@
 #' @param assumed_residence Assumed mean residence time (days), also known as survey life.
 #'   If supplied, this value is used to construct the residence-time
 #'   prior and to calculate traditional trapezoidal area under the curve (TAUC)
-#'   abundance estimates. If NULL, the default SpawnEst residence-time prior
+#'   abundance estimates. If NULL, the default spawnBayes residence-time prior
 #'   is used and TAUC estimates are not calculated.
 #' @param arrival_peak Expected peak arrival date. If NULL,
 #'   a default value is estimated using the survey-date
@@ -32,7 +32,7 @@
 #' @param iter_sampling Number of post-warmup iterations per chain.
 #' @param adapt_delta Stan adaptation target acceptance rate.
 #'
-#' @return A `spawnest_fit` object.
+#' @return A `spawnBayes_fit` object.
 #'
 #' @export
 fit_spawner <- function(
@@ -142,8 +142,8 @@ fit_spawner <- function(
   
   stan_file <- system.file(
     "stan",
-    "spawnest.stan",
-    package = "SpawnEst"
+    "spawnBayes.stan",
+    package = "spawnBayes"
   )
   
   mod <- cmdstanr::cmdstan_model(stan_file)
@@ -167,7 +167,7 @@ fit_spawner <- function(
       assumed_residence = assumed_residence,
       TAUC = TAUC
     ),
-    class = "spawnest_fit"
+    class = "spawnBayes_fit"
   )
   
 }

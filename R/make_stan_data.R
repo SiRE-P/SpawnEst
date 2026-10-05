@@ -1,7 +1,7 @@
-#' Construct Stan data for SpawnEst
+#' Construct Stan data for spawnBayes
 #'
 #' Convert validated survey data and prior specifications into
-#' the data list required by the SpawnEst Stan model.
+#' the data list required by the spawnBayes Stan model.
 #'
 #' @param data A validated data frame containing survey observations.
 #' @param priors A prior specification object returned by

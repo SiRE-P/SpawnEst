@@ -26,7 +26,7 @@ fit_spawner(
 \item{assumed_residence}{Assumed mean residence time (days), also known as survey life.
 If supplied, this value is used to construct the residence-time
 prior and to calculate traditional trapezoidal area under the curve (TAUC)
-abundance estimates. If NULL, the default SpawnEst residence-time prior
+abundance estimates. If NULL, the default spawnBayes residence-time prior
 is used and TAUC estimates are not calculated.}
 
 \item{arrival_peak}{Expected peak arrival date. If NULL,
@@ -53,10 +53,10 @@ on either side of the run.}
 \item{adapt_delta}{Stan adaptation target acceptance rate.}
 }
 \value{
-A \code{spawnest_fit} object.
+A \code{spawnBayes_fit} object.
 }
 \description{
-Fit the SpawnEst model to repeated spawner count surveys.
+Fit the spawnBayes model to repeated spawner count surveys.
 }
 \details{
 The input data must contain a \code{date} column and a

@@ -1,8 +1,8 @@
 #' Plot timing estimates
 #'
-#' Plot annual timing estimates from a fitted SpawnEst model.
+#' Plot annual timing estimates from a fitted spawnBayes model.
 #'
-#' @param fit A fitted SpawnEst model.
+#' @param fit A fitted spawnBayes model.
 #' @param CI Credible interval widths to report.
 #' @param format Either `"yday"` or `"date"`.
 #'
@@ -13,8 +13,8 @@
 #' @export
 plot_timing <- function(fit, CI = c(66, 95), format = c("yday", "date")) {
   
-  if (!inherits(fit, "spawnest_fit"))
-    stop("fit must be a spawnest_fit object.", call. = FALSE)
+  if (!inherits(fit, "spawnBayes_fit"))
+    stop("fit must be a spawnBayes_fit object.", call. = FALSE)
   
   format <- match.arg(format)
   

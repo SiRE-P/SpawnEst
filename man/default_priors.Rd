@@ -34,5 +34,5 @@ Ignored when \code{arrival_peak} is supplied.}
 A list containing prior specifications.
 }
 \description{
-Create a default prior specification for SpawnEst.
+Create a default prior specification for spawnBayes.
 }

@@ -8,7 +8,7 @@
 #' were applied, the original uncorrected survey counts are shown
 #' as open circles.
 #'
-#' @param fit A fitted SpawnEst model.
+#' @param fit A fitted spawnBayes model.
 #' @param CI Credible interval width to report.
 #'
 #' @return A ggplot object showing fitted run curves and observed
@@ -17,8 +17,8 @@
 #' @export
 plot_run_curve <- function(fit, CI = 95) {
   
-  if (!inherits(fit, "spawnest_fit"))
-    stop("fit must be a spawnest_fit object.", call. = FALSE)
+  if (!inherits(fit, "spawnBayes_fit"))
+    stop("fit must be a spawnBayes_fit object.", call. = FALSE)
   
   if (!is.numeric(CI) || length(CI) != 1)
     stop("CI must be a single numeric value.", call. = FALSE)

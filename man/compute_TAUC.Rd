@@ -12,7 +12,7 @@ compute_TAUC(data, assumed_residence)
 \item{assumed_residence}{Assumed mean residence time (days).}
 }
 \value{
-A \code{spawnest_fit} object containing:
+A \code{spawnBayes_fit} object containing:
 \describe{
 \item{fit}{CmdStanMCMC model fit.}
 \item{data}{Input data used for fitting.}

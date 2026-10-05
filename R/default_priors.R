@@ -1,6 +1,6 @@
 #' Default prior specification
 #'
-#' Create a default prior specification for SpawnEst.
+#' Create a default prior specification for spawnBayes.
 #'
 #' @param data A data frame containing survey observations.
 #' @param abundance Expected total spawner abundance. If NULL,

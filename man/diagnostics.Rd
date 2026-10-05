@@ -7,7 +7,7 @@
 diagnostics(fit)
 }
 \arguments{
-\item{fit}{A fitted SpawnEst model.}
+\item{fit}{A fitted spawnBayes model.}
 }
 \value{
 A data frame containing convergence diagnostics and
@@ -15,5 +15,5 @@ recommended actions if problems are detected.
 }
 \description{
 Summarize MCMC convergence diagnostics for a fitted
-SpawnEst model.
+spawnBayes model.
 }
