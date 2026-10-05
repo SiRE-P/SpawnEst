@@ -97,8 +97,12 @@ colmed <-"#2171b5"
 
 fish <- image_read_svg("./inst/logo/sockeye.svg")
 
+fish_img <- as.raster(fish)
+
+fish_img <- fish_img[, ncol(fish_img):1]
+
 fish_grob <- rasterGrob(
-  as.raster(fish),
+  fish_img,
   interpolate = TRUE
 )
 
@@ -149,7 +153,7 @@ p <- p + annotation_custom(
 p
 
 ggsave(
-  "./inst/logo/curve7.png",
+  "./inst/logo/curve8.png",
   p,
   width = 5,
   height = 3,
@@ -159,7 +163,7 @@ ggsave(
 
 
 sticker(
-  subplot = "./inst/logo/curve7.png",
+  subplot = "./inst/logo/curve8.png",
   package = "spawnBayes",
   p_family = "sans",
   p_size = 20,

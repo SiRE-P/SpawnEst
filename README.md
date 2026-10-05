@@ -1,8 +1,6 @@
-<img src = 'man/figures/logo.png' height = '180' align="right" />
+# spawnBayes <img src="man/figures/logo.png" align="right" height="160"/></a>
 
-# SpawnBayes
-
-`SpawnBayes` implements the Bayesian spawner abundance estimation method described by Thompson et al. (2026) for estimating annual spawner abundance and run timing from repeated live-count surveys.
+`spawnBayes` implements the Bayesian spawner abundance estimation method described by Thompson et al. (2026) for estimating annual spawner abundance and run timing from repeated live-count surveys.
 
 The package is designed to support salmon stock assessment and escapement monitoring programs. Users provide survey dates and spawner counts and obtain estimates of annual abundance, run timing, effective residence time, and associated uncertainty.
 
@@ -10,11 +8,11 @@ The package is designed to support salmon stock assessment and escapement monito
 
 ```r
 # install.packages("remotes")
-remotes::install_github("SiRE-P/SpawnBayes")
+remotes::install_github("SiRE-P/spawnBayes")
 ```
 ## Prerequisites
 
-SpawnBayes uses `cmdstanr` and requires a local installation of CmdStan.
+spawnBayes uses `cmdstanr` and requires a local installation of CmdStan.
 
 Install `cmdstanr`:
 
@@ -51,7 +49,7 @@ A typical analysis consists of:
 6. Visualizing model outputs.
 
 ```r
-library(SpawnBayes)
+library(spawnBayes)
 
 fit <- fit_spawner(counts)
 
@@ -118,7 +116,7 @@ template_file()
 This creates:
 
 ```text
-SpawnBayes_template.csv
+spawnBayes_template.csv
 ```
 
 containing the required and optional input columns.
@@ -168,7 +166,7 @@ plot_timing(fit)
 
 ## Traditional TAUC Comparison
 
-A traditional trapezoidal area-under-the-curve (TAUC) estimate can be calculated alongside SpawnBayes estimates by specifying an assumed residence time (survey life).
+A traditional trapezoidal area-under-the-curve (TAUC) estimate can be calculated alongside spawnBayes estimates by specifying an assumed residence time (survey life).
 
 ```r
 fit <- fit_spawner(
@@ -216,6 +214,6 @@ This package is currently under active development.
 
 ## Citation
 
-If you use `SpawnBayes` in a publication, please cite:
+If you use `spawnBayes` in a publication, please cite:
 
 Thompson, P.L., Akenhead, S.A., and Louie, C. 2026. *Bayesian estimation of spawner abundance and run timing from repeated live-count surveys*. Canadian Journal of Fisheries and Aquatic Sciences 83: 1–13.
