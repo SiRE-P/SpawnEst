@@ -4,12 +4,13 @@
 \alias{plot_run_curve}
 \title{Plot fitted run curves}
 \usage{
-plot_run_curve(fit, CI = 95)
+plot_run_curve(fit, CI = c(66, 95))
 }
 \arguments{
 \item{fit}{A fitted spawnBayes model.}
 
-\item{CI}{Credible interval width to report.}
+\item{CI}{Numeric vector of credible interval widths to plot.
+Multiple intervals may be supplied (e.g., \code{c(66, 95)}).}
 }
 \value{
 A ggplot object showing fitted run curves and observed

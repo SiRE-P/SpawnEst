@@ -131,13 +131,21 @@ When fitting new datasets, users should pay particular attention to:
 The recommendation column provides a summary of whether additional model
 tuning or longer runs are required.
 
+# Prior-posterior comparisons
+
+Prior-posterior comparisons are a useful diagnostic for understanding how much information the data contribute to parameter estimation. When using loosely informative priors, posterior distributions are often expected to be narrower than the priors while remaining largely consistent with them. Prior-posterior comparisons can help identify parameters that are strongly informed by the data and assess whether prior assumptions are reasonable.
+
+```{r prior-post, fig.width=8, fig.height=7}
+prior_post_plot(fit)
+```
+
 # Estimated run
 The fitted curves represent the estimated number of spawners present
-through time. Shaded regions show posterior 95% credible intervals.
+through time. Shaded regions show the 66 and 95% credible intervals.
 Observed survey counts are shown as points. The open circles show the uncorrected survey counts. The filled circles are corrected for observer efficiency and survey coverage. 
 
 ```{r run-curves, fig.width=8, fig.height=7}
-plot_run_curve(fit, CI = 95)
+plot_run_curve(fit)
 ```
 
 

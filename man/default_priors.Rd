@@ -36,3 +36,15 @@ A list containing prior specifications.
 \description{
 Create a default prior specification for spawnBayes.
 }
+\details{
+Default priors are partially informed by the survey design.
+When \code{arrival_peak} is not supplied, the prior mean is estimated
+from the survey-date quantile specified by \code{arrival_quantile}.
+
+The default arrival-spread prior is derived from the median
+annual survey span (difference between the first and last survey
+dates within years). The prior mean is approximated as one-sixth
+of the median survey span, reflecting the assumption that survey
+windows encompass arrival, residence, departure, and additional
+buffer periods before and after the run.
+}
