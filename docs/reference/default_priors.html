@@ -85,6 +85,18 @@ Ignored when <code>arrival_peak</code> is supplied.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list containing prior specifications.</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Default priors are partially informed by the survey design.
+When <code>arrival_peak</code> is not supplied, the prior mean is estimated
+from the survey-date quantile specified by <code>arrival_quantile</code>.</p>
+<p>The default arrival-spread prior is derived from the median
+annual survey span (difference between the first and last survey
+dates within years). The prior mean is approximated as one-sixth
+of the median survey span, reflecting the assumption that survey
+windows encompass arrival, residence, departure, and additional
+buffer periods before and after the run.</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

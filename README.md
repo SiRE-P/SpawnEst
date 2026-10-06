@@ -1,6 +1,6 @@
 # spawnBayes <img src="man/figures/logo.png" align="right" height="160"/></a>
 
-`spawnBayes estimates salmon spawner abundance and run timing from repeated
+`spawnBayes` estimates salmon spawner abundance and run timing from repeated
 live-count surveys. Unlike traditional area-under-the-curve approaches,
 `spawnBayes` estimates abundance, run timing, and their associated
 uncertainty while allowing residence time to vary among years.

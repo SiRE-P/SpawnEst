@@ -44,7 +44,7 @@ against observed survey counts for each year.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_run_curve</span><span class="op">(</span><span class="va">fit</span>, CI <span class="op">=</span> <span class="fl">95</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_run_curve</span><span class="op">(</span><span class="va">fit</span>, CI <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">66</span>, <span class="fl">95</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -56,7 +56,8 @@ against observed survey counts for each year.</p>
 
 
 <dt id="arg-ci">CI<a class="anchor" aria-label="anchor" href="#arg-ci"></a></dt>
-<dd><p>Credible interval width to report.</p></dd>
+<dd><p>Numeric vector of credible interval widths to plot.
+Multiple intervals may be supplied (e.g., <code>c(66, 95)</code>).</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -48,3 +48,5 @@ rsconnect/
 inst/stan/*.exe
 
 inst/doc
+/doc/
+/Meta/
