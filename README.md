@@ -90,18 +90,16 @@ timing(fit)
 
 ## Worked Example
 
-A complete analysis using Clemens Creek Sockeye salmon data is provided
-in the package vignette:
+A complete worked example using Clemens Creek Sockeye salmon data is
+included in the package vignette.
+
+After installation, the vignette can be opened with:
 
 ```r
-browseVignettes("spawnBayes")
-```
-
-or
-
-```r
-vignette("clemens-creek-sockeye", package = "spawnBayes")
-```
+vignette(
+  "clemens-creek-sockeye",
+  package = "spawnBayes"
+)
 
 ## Data Template
 
