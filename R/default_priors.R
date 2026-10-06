@@ -2,6 +2,17 @@
 #'
 #' Create a default prior specification for spawnBayes.
 #'
+#' Default priors are partially informed by the survey design.
+#' When `arrival_peak` is not supplied, the prior mean is estimated
+#' from the survey-date quantile specified by `arrival_quantile`.
+#'
+#' The default arrival-spread prior is derived from the median
+#' annual survey span (difference between the first and last survey
+#' dates within years). The prior mean is approximated as one-sixth
+#' of the median survey span, reflecting the assumption that survey
+#' windows encompass arrival, residence, departure, and additional
+#' buffer periods before and after the run.
+#'
 #' @param data A data frame containing survey observations.
 #' @param abundance Expected total spawner abundance. If NULL,
 #'   a default value is estimated from the observed counts.
@@ -34,6 +45,19 @@ default_priors <- function(data, abundance = NULL, assumed_residence = NULL, arr
     dplyr::group_by(year) |>
     dplyr::summarise(peak_count = max(spawner_counts, na.rm = TRUE), .groups = "drop")
   
+  survey_spans <- data |>
+    dplyr::mutate(
+      year = lubridate::year(date),
+      yday = lubridate::yday(date)
+    ) |>
+    dplyr::group_by(year) |>
+    dplyr::summarise(
+      survey_span = max(yday) - min(yday),
+      .groups = "drop"
+    )
+  
+  spread_guess <- max(median(survey_spans$survey_span, na.rm = TRUE) / 6, 2)
+  
   if (is.null(abundance))
     abundance <- median(annual_peaks$peak_count * 1.5, na.rm = TRUE)
   
@@ -54,8 +78,8 @@ default_priors <- function(data, abundance = NULL, assumed_residence = NULL, arr
   list(
     abundance = list(mean = abundance, sdlog = abundance_sdlog),
     arrival_peak = list(mean = arrival_peak, sd = arrival_peak_sd),
-    arrival_sigma = list(mean = 2, sd = 0.2),
-    spread = list(mean = 2, sd = 0.2),
+    arrival_sigma = list(mean = 2, sd = 0.3),
+    spread = list(mean = log(spread_guess - 1), sd = 0.2),
     spread_sigma = list(mean = 0.5, sd = 0.25),
     residence = list( mean = residence_mean, sd = 0.2),
     count_dispersion = list(mean = log(20), sd = 0.5)
