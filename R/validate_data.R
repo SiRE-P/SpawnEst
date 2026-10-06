@@ -196,8 +196,18 @@ validate_data <- function(data) {
       call. = FALSE
     )
   
-  data$survey_error_group <- factor(
+  data$survey_error_group <- trimws(
     as.character(data$survey_error_group)
+  )
+  
+  if (any(data$survey_error_group == ""))
+    stop(
+      "survey_error_group contains blank values.",
+      call. = FALSE
+    )
+  
+  data$survey_error_group <- factor(
+    data$survey_error_group
   )
   
   if (has_error_groups) {
