@@ -11,6 +11,8 @@
 - [`plot_abundance()`](plot_abundance.md) : Plot abundance estimates
 - [`plot_run_curve()`](plot_run_curve.md) : Plot fitted run curves
 - [`plot_timing()`](plot_timing.md) : Plot timing estimates
+- [`prior_post_plot()`](prior_post_plot.md) : Plot prior and posterior
+  distributions
 - [`template_file()`](template_file.md) : Create a spawnBayes data
   template
 - [`timing()`](timing.md) : Extract timing estimates

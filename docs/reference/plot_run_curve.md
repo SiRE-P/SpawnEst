@@ -6,7 +6,7 @@ observed survey counts for each year.
 ## Usage
 
 ``` r
-plot_run_curve(fit, CI = 95)
+plot_run_curve(fit, CI = c(66, 95))
 ```
 
 ## Arguments
@@ -17,7 +17,8 @@ plot_run_curve(fit, CI = 95)
 
 - CI:
 
-  Credible interval width to report.
+  Numeric vector of credible interval widths to plot. Multiple intervals
+  may be supplied (e.g., `c(66, 95)`).
 
 ## Value
 

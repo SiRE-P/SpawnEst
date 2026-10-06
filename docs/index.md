@@ -1,8 +1,10 @@
 # spawnBayes
 
-`spawnBayes estimates salmon spawner abundance and run timing from repeated live-count surveys. Unlike traditional area-under-the-curve approaches,`spawnBayes\`
-estimates abundance, run timing, and their associated uncertainty while
-allowing residence time to vary among years.
+`spawnBayes` estimates salmon spawner abundance and run timing from
+repeated live-count surveys. Unlike traditional area-under-the-curve
+approaches, `spawnBayes` estimates abundance, run timing, and their
+associated uncertainty while allowing residence time to vary among
+years.
 
 The package is designed to support salmon stock assessment and
 escapement monitoring programs. Users provide survey dates and spawner

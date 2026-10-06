@@ -69,7 +69,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/SiRE-P/spawnBayes" class="external-link">spawnBayes</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sire-p.github.io/spawnBayes" class="external-link">spawnBayes</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a></span><span class="op">)</span></span>
@@ -193,14 +193,14 @@ recommended. Even so, the model may require several minutes to fit.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_spawner.html">fit_spawner</a></span><span class="op">(</span><span class="va">clemens_sockeye</span>, iter_warmup <span class="op">=</span> <span class="fl">500</span>, iter_sampling <span class="op">=</span> <span class="fl">500</span>, assumed_residence <span class="op">=</span> <span class="fl">15.5</span>, adapt_delta <span class="op">=</span> <span class="fl">0.99</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running MCMC with 4 parallel chains...</span></span>
-<span><span class="co">#&gt; Chain 2 finished in 32.9 seconds.</span></span>
-<span><span class="co">#&gt; Chain 1 finished in 37.4 seconds.</span></span>
-<span><span class="co">#&gt; Chain 4 finished in 42.7 seconds.</span></span>
-<span><span class="co">#&gt; Chain 3 finished in 47.3 seconds.</span></span>
+<span><span class="co">#&gt; Chain 3 finished in 31.7 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1 finished in 36.5 seconds.</span></span>
+<span><span class="co">#&gt; Chain 2 finished in 46.0 seconds.</span></span>
+<span><span class="co">#&gt; Chain 4 finished in 47.9 seconds.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All 4 chains finished successfully.</span></span>
-<span><span class="co">#&gt; Mean chain execution time: 40.1 seconds.</span></span>
-<span><span class="co">#&gt; Total execution time: 47.7 seconds.</span></span></code></pre></div>
+<span><span class="co">#&gt; Mean chain execution time: 40.5 seconds.</span></span>
+<span><span class="co">#&gt; Total execution time: 48.4 seconds.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="model-diagnostics">Model diagnostics<a class="anchor" aria-label="anchor" href="#model-diagnostics"></a>
@@ -210,9 +210,9 @@ of MCMC sampling performance and model convergence.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   converged    quality divergences treedepth_hits max_rhat min_ess_bulk</span></span>
-<span><span class="co">#&gt; 1      TRUE acceptable           0              0    1.021          194</span></span>
+<span><span class="co">#&gt; 1      TRUE acceptable           0              0     1.01          331</span></span>
 <span><span class="co">#&gt;   min_ess_tail      recommendation</span></span>
-<span><span class="co">#&gt; 1          323 No action required.</span></span></code></pre></div>
+<span><span class="co">#&gt; 1          698 No action required.</span></span></code></pre></div>
 <p>In this example, all diagnostic checks were acceptable. No divergent
 transitions were detected, no maximum tree-depth warnings were
 encountered, and the largest Rhat value was close to 1. Effective sample
@@ -233,15 +233,29 @@ estimation of posterior summaries.</li>
 model tuning or longer runs are required.</p>
 </div>
 <div class="section level2">
+<h2 id="prior-posterior-comparisons">Prior-posterior comparisons<a class="anchor" aria-label="anchor" href="#prior-posterior-comparisons"></a>
+</h2>
+<p>Prior-posterior comparisons are a useful diagnostic for understanding
+how much information the data contribute to parameter estimation. When
+using loosely informative priors, posterior distributions are often
+expected to be narrower than the priors while remaining largely
+consistent with them. Prior-posterior comparisons can help identify
+parameters that are strongly informed by the data and assess whether
+prior assumptions are reasonable.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/prior_post_plot.html">prior_post_plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
+<p><img src="clemens-creek-sockeye_files/figure-html/prior-post-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="section level2">
 <h2 id="estimated-run">Estimated run<a class="anchor" aria-label="anchor" href="#estimated-run"></a>
 </h2>
 <p>The fitted curves represent the estimated number of spawners present
-through time. Shaded regions show posterior 95% credible intervals.
+through time. Shaded regions show the 66 and 95% credible intervals.
 Observed survey counts are shown as points. The open circles show the
 uncorrected survey counts. The filled circles are corrected for observer
 efficiency and survey coverage.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_run_curve.html">plot_run_curve</a></span><span class="op">(</span><span class="va">fit</span>, CI <span class="op">=</span> <span class="fl">95</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_run_curve.html">plot_run_curve</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="clemens-creek-sockeye_files/figure-html/run-curves-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 <div class="section level2">
@@ -249,7 +263,7 @@ efficiency and survey coverage.</p>
 </h2>
 <p>Estimated annual abundance is obtained by integrating the estimated
 arrival and exit processes over the spawning season.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">abund</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abundance.html">abundance</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">abund</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -265,155 +279,155 @@ arrival and exit processes over the spawning season.</p>
 <tbody>
 <tr class="odd">
 <td align="right">2008</td>
-<td align="right">10684</td>
-<td align="right">14936</td>
-<td align="right">20989</td>
-<td align="right">30577</td>
-<td align="right">45490</td>
+<td align="right">10298</td>
+<td align="right">13839</td>
+<td align="right">19682</td>
+<td align="right">28185</td>
+<td align="right">42258</td>
 <td align="right">14911</td>
 </tr>
 <tr class="even">
 <td align="right">2009</td>
-<td align="right">19721</td>
-<td align="right">30223</td>
-<td align="right">45687</td>
-<td align="right">67280</td>
-<td align="right">102725</td>
+<td align="right">18823</td>
+<td align="right">26966</td>
+<td align="right">39551</td>
+<td align="right">57716</td>
+<td align="right">87487</td>
 <td align="right">37985</td>
 </tr>
 <tr class="odd">
 <td align="right">2010</td>
-<td align="right">20045</td>
-<td align="right">31224</td>
-<td align="right">50232</td>
-<td align="right">82237</td>
-<td align="right">136015</td>
+<td align="right">18217</td>
+<td align="right">26869</td>
+<td align="right">41794</td>
+<td align="right">67336</td>
+<td align="right">108259</td>
 <td align="right">66268</td>
 </tr>
 <tr class="even">
 <td align="right">2011</td>
-<td align="right">18674</td>
-<td align="right">25163</td>
-<td align="right">34711</td>
-<td align="right">46632</td>
-<td align="right">65402</td>
+<td align="right">17096</td>
+<td align="right">23425</td>
+<td align="right">31349</td>
+<td align="right">42356</td>
+<td align="right">58033</td>
 <td align="right">34652</td>
 </tr>
 <tr class="odd">
 <td align="right">2012</td>
-<td align="right">6481</td>
-<td align="right">9695</td>
-<td align="right">14063</td>
-<td align="right">21291</td>
-<td align="right">32381</td>
+<td align="right">5917</td>
+<td align="right">8236</td>
+<td align="right">12059</td>
+<td align="right">17787</td>
+<td align="right">29054</td>
 <td align="right">16593</td>
 </tr>
 <tr class="even">
 <td align="right">2013</td>
-<td align="right">8579</td>
-<td align="right">11535</td>
-<td align="right">15490</td>
-<td align="right">21129</td>
-<td align="right">30467</td>
+<td align="right">8098</td>
+<td align="right">10756</td>
+<td align="right">14314</td>
+<td align="right">19721</td>
+<td align="right">28653</td>
 <td align="right">13387</td>
 </tr>
 <tr class="odd">
 <td align="right">2014</td>
-<td align="right">5053</td>
-<td align="right">6832</td>
-<td align="right">9067</td>
-<td align="right">12317</td>
-<td align="right">17710</td>
+<td align="right">5033</td>
+<td align="right">6737</td>
+<td align="right">8939</td>
+<td align="right">12099</td>
+<td align="right">17688</td>
 <td align="right">12401</td>
 </tr>
 <tr class="even">
 <td align="right">2015</td>
-<td align="right">2268</td>
-<td align="right">3026</td>
-<td align="right">3887</td>
-<td align="right">5050</td>
-<td align="right">7128</td>
+<td align="right">2049</td>
+<td align="right">2735</td>
+<td align="right">3553</td>
+<td align="right">4670</td>
+<td align="right">6738</td>
 <td align="right">2611</td>
 </tr>
 <tr class="odd">
 <td align="right">2016</td>
-<td align="right">8798</td>
-<td align="right">11433</td>
-<td align="right">14795</td>
-<td align="right">19292</td>
-<td align="right">26190</td>
+<td align="right">8073</td>
+<td align="right">10631</td>
+<td align="right">13875</td>
+<td align="right">18011</td>
+<td align="right">24452</td>
 <td align="right">17529</td>
 </tr>
 <tr class="even">
 <td align="right">2017</td>
-<td align="right">12358</td>
-<td align="right">16734</td>
-<td align="right">22342</td>
-<td align="right">30546</td>
-<td align="right">41692</td>
+<td align="right">11596</td>
+<td align="right">15402</td>
+<td align="right">20191</td>
+<td align="right">27639</td>
+<td align="right">38948</td>
 <td align="right">30735</td>
 </tr>
 <tr class="odd">
 <td align="right">2018</td>
-<td align="right">11181</td>
-<td align="right">14482</td>
-<td align="right">19059</td>
-<td align="right">25206</td>
-<td align="right">34792</td>
+<td align="right">10139</td>
+<td align="right">13582</td>
+<td align="right">18264</td>
+<td align="right">23988</td>
+<td align="right">32658</td>
 <td align="right">17290</td>
 </tr>
 <tr class="even">
 <td align="right">2019</td>
-<td align="right">5356</td>
-<td align="right">6905</td>
-<td align="right">9116</td>
-<td align="right">12006</td>
-<td align="right">16597</td>
+<td align="right">5044</td>
+<td align="right">6617</td>
+<td align="right">8613</td>
+<td align="right">11457</td>
+<td align="right">15576</td>
 <td align="right">7904</td>
 </tr>
 <tr class="odd">
 <td align="right">2020</td>
-<td align="right">3404</td>
-<td align="right">4476</td>
-<td align="right">6016</td>
-<td align="right">8275</td>
-<td align="right">11955</td>
+<td align="right">3181</td>
+<td align="right">4418</td>
+<td align="right">5785</td>
+<td align="right">7734</td>
+<td align="right">10928</td>
 <td align="right">5188</td>
 </tr>
 <tr class="even">
 <td align="right">2021</td>
-<td align="right">15860</td>
-<td align="right">20986</td>
-<td align="right">28895</td>
-<td align="right">40802</td>
-<td align="right">59436</td>
+<td align="right">13912</td>
+<td align="right">19573</td>
+<td align="right">26741</td>
+<td align="right">37813</td>
+<td align="right">56102</td>
 <td align="right">21745</td>
 </tr>
 <tr class="odd">
 <td align="right">2022</td>
-<td align="right">6863</td>
-<td align="right">8729</td>
-<td align="right">11646</td>
-<td align="right">16618</td>
-<td align="right">25205</td>
+<td align="right">6507</td>
+<td align="right">8339</td>
+<td align="right">11105</td>
+<td align="right">15163</td>
+<td align="right">22318</td>
 <td align="right">24805</td>
 </tr>
 <tr class="even">
 <td align="right">2023</td>
-<td align="right">13946</td>
-<td align="right">18649</td>
-<td align="right">24618</td>
-<td align="right">32671</td>
-<td align="right">43809</td>
+<td align="right">13521</td>
+<td align="right">17433</td>
+<td align="right">22866</td>
+<td align="right">29596</td>
+<td align="right">40155</td>
 <td align="right">24246</td>
 </tr>
 <tr class="odd">
 <td align="right">2024</td>
-<td align="right">4526</td>
-<td align="right">5912</td>
-<td align="right">7480</td>
-<td align="right">9519</td>
-<td align="right">12383</td>
+<td align="right">4270</td>
+<td align="right">5393</td>
+<td align="right">6855</td>
+<td align="right">8680</td>
+<td align="right">11634</td>
 <td align="right">5543</td>
 </tr>
 </tbody>
@@ -422,13 +436,13 @@ arrival and exit processes over the spawning season.</p>
 posterior credible intervals. The red x shows the estimate based on
 trapezoidal area under the curve, with an assumed 15.5 day residence
 (survey life).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_abundance.html">plot_abundance</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="clemens-creek-sockeye_files/figure-html/abund-plot-1.png" class="r-plt" alt="" width="576">
 # Timing estimates</p>
 <p>Run timing summaries describe the estimated distribution of spawner
 arrival dates, residence, and exit lag in each year.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_timing.html">plot_timing</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="clemens-creek-sockeye_files/figure-html/timing-plot-1.png" class="r-plt" alt="" width="768"></p>
 </div>

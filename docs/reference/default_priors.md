@@ -43,3 +43,16 @@ default_priors(
 ## Value
 
 A list containing prior specifications.
+
+## Details
+
+Default priors are partially informed by the survey design. When
+`arrival_peak` is not supplied, the prior mean is estimated from the
+survey-date quantile specified by `arrival_quantile`.
+
+The default arrival-spread prior is derived from the median annual
+survey span (difference between the first and last survey dates within
+years). The prior mean is approximated as one-sixth of the median survey
+span, reflecting the assumption that survey windows encompass arrival,
+residence, departure, and additional buffer periods before and after the
+run.
