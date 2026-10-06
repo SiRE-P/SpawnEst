@@ -1,6 +1,6 @@
 # spawnBayes
 
-`spawnBayes estimates salmon spawner abundance and run timing estimated from repeated live-count surveys. Unlike traditional area-under-the-curve approaches,`spawnBayes\`
+`spawnBayes estimates salmon spawner abundance and run timing from repeated live-count surveys. Unlike traditional area-under-the-curve approaches,`spawnBayes\`
 estimates abundance, run timing, and their associated uncertainty while
 allowing residence time to vary among years.
 
@@ -8,6 +8,13 @@ The package is designed to support salmon stock assessment and
 escapement monitoring programs. Users provide survey dates and spawner
 counts and obtain estimates of annual abundance, run timing, effective
 residence time, and associated uncertainty.
+
+## Documentation
+
+Online documentation, reference manuals, and a complete worked example
+are available at:
+
+[spawnBayes documentation](https://sire-p.github.io/spawnBayes/)
 
 ## Installation
 
@@ -92,16 +99,10 @@ timing(fit)
 ## Worked Example
 
 A complete worked example using Clemens Creek Sockeye salmon data is
-included in the package vignette.
+available in the documentation:
 
-After installation, the vignette can be opened with:
-
-``` r
-vignette(
-  "clemens-creek-sockeye",
-  package = "spawnBayes"
-)
-```
+[Clemens Creek Sockeye
+Example](https://sire-p.github.io/spawnBayes/articles/clemens-creek-sockeye.html)
 
 ## Data Template
 

@@ -62,8 +62,14 @@
 <img src="logo.png" class="logo" alt=""><h1 id="spawnbayes-">spawnBayes <a class="anchor" aria-label="anchor" href="#spawnbayes-"></a>
 </h1>
 </div>
-<p><code>spawnBayes estimates salmon spawner abundance and run timing estimated from repeated live-count surveys. Unlike traditional area-under-the-curve approaches,</code>spawnBayes` estimates abundance, run timing, and their associated uncertainty while allowing residence time to vary among years.</p>
+<p><code>spawnBayes estimates salmon spawner abundance and run timing from repeated live-count surveys. Unlike traditional area-under-the-curve approaches,</code>spawnBayes` estimates abundance, run timing, and their associated uncertainty while allowing residence time to vary among years.</p>
 <p>The package is designed to support salmon stock assessment and escapement monitoring programs. Users provide survey dates and spawner counts and obtain estimates of annual abundance, run timing, effective residence time, and associated uncertainty.</p>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
+<p>Online documentation, reference manuals, and a complete worked example are available at:</p>
+<p><a href="https://sire-p.github.io/spawnBayes/" class="external-link">spawnBayes documentation</a></p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -157,19 +163,14 @@
 <div class="section level2">
 <h2 id="worked-example">Worked Example<a class="anchor" aria-label="anchor" href="#worked-example"></a>
 </h2>
-<p>A complete worked example using Clemens Creek Sockeye salmon data is included in the package vignette.</p>
-<p>After installation, the vignette can be opened with:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span></span>
-<span>  <span class="st">"clemens-creek-sockeye"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"spawnBayes"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<p>A complete worked example using Clemens Creek Sockeye salmon data is available in the documentation:</p>
+<p><a href="https://sire-p.github.io/spawnBayes/articles/clemens-creek-sockeye.html" class="external-link">Clemens Creek Sockeye Example</a></p>
 </div>
 <div class="section level2">
 <h2 id="data-template">Data Template<a class="anchor" aria-label="anchor" href="#data-template"></a>
 </h2>
 <p>Create a template CSV file in the current working directory:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/template_file.html">template_file</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This creates:</p>
 <pre class="text"><code><span><span class="va">spawnBayes_template.csv</span></span></code></pre>
