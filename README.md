@@ -100,6 +100,7 @@ vignette(
   "clemens-creek-sockeye",
   package = "spawnBayes"
 )
+```
 
 ## Data Template
 
