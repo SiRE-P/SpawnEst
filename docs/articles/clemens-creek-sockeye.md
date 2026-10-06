@@ -130,14 +130,14 @@ recommended. Even so, the model may require several minutes to fit.
 ``` r
 fit <- fit_spawner(clemens_sockeye, iter_warmup = 500, iter_sampling = 500, assumed_residence = 15.5, adapt_delta = 0.99, refresh = 0)
 #> Running MCMC with 4 parallel chains...
-#> Chain 2 finished in 32.9 seconds.
-#> Chain 1 finished in 37.4 seconds.
-#> Chain 4 finished in 42.7 seconds.
-#> Chain 3 finished in 47.3 seconds.
+#> Chain 3 finished in 31.7 seconds.
+#> Chain 1 finished in 36.5 seconds.
+#> Chain 2 finished in 46.0 seconds.
+#> Chain 4 finished in 47.9 seconds.
 #> 
 #> All 4 chains finished successfully.
-#> Mean chain execution time: 40.1 seconds.
-#> Total execution time: 47.7 seconds.
+#> Mean chain execution time: 40.5 seconds.
+#> Total execution time: 48.4 seconds.
 ```
 
 ## Model diagnostics
@@ -148,9 +148,9 @@ several indicators of MCMC sampling performance and model convergence.
 ``` r
 diagnostics(fit)
 #>   converged    quality divergences treedepth_hits max_rhat min_ess_bulk
-#> 1      TRUE acceptable           0              0    1.021          194
+#> 1      TRUE acceptable           0              0     1.01          331
 #>   min_ess_tail      recommendation
-#> 1          323 No action required.
+#> 1          698 No action required.
 ```
 
 In this example, all diagnostic checks were acceptable. No divergent
@@ -172,16 +172,32 @@ When fitting new datasets, users should pay particular attention to:
 The recommendation column provides a summary of whether additional model
 tuning or longer runs are required.
 
+## Prior-posterior comparisons
+
+Prior-posterior comparisons are a useful diagnostic for understanding
+how much information the data contribute to parameter estimation. When
+using loosely informative priors, posterior distributions are often
+expected to be narrower than the priors while remaining largely
+consistent with them. Prior-posterior comparisons can help identify
+parameters that are strongly informed by the data and assess whether
+prior assumptions are reasonable.
+
+``` r
+prior_post_plot(fit)
+```
+
+![](clemens-creek-sockeye_files/figure-html/prior-post-1.png)
+
 ## Estimated run
 
 The fitted curves represent the estimated number of spawners present
-through time. Shaded regions show posterior 95% credible intervals.
+through time. Shaded regions show the 66 and 95% credible intervals.
 Observed survey counts are shown as points. The open circles show the
 uncorrected survey counts. The filled circles are corrected for observer
 efficiency and survey coverage.
 
 ``` r
-plot_run_curve(fit, CI = 95)
+plot_run_curve(fit)
 ```
 
 ![](clemens-creek-sockeye_files/figure-html/run-curves-1.png)
@@ -198,23 +214,23 @@ knitr::kable(abund)
 
 | year | lower_95 | lower_66 | median | upper_66 | upper_95 |  TAUC |
 |-----:|---------:|---------:|-------:|---------:|---------:|------:|
-| 2008 |    10684 |    14936 |  20989 |    30577 |    45490 | 14911 |
-| 2009 |    19721 |    30223 |  45687 |    67280 |   102725 | 37985 |
-| 2010 |    20045 |    31224 |  50232 |    82237 |   136015 | 66268 |
-| 2011 |    18674 |    25163 |  34711 |    46632 |    65402 | 34652 |
-| 2012 |     6481 |     9695 |  14063 |    21291 |    32381 | 16593 |
-| 2013 |     8579 |    11535 |  15490 |    21129 |    30467 | 13387 |
-| 2014 |     5053 |     6832 |   9067 |    12317 |    17710 | 12401 |
-| 2015 |     2268 |     3026 |   3887 |     5050 |     7128 |  2611 |
-| 2016 |     8798 |    11433 |  14795 |    19292 |    26190 | 17529 |
-| 2017 |    12358 |    16734 |  22342 |    30546 |    41692 | 30735 |
-| 2018 |    11181 |    14482 |  19059 |    25206 |    34792 | 17290 |
-| 2019 |     5356 |     6905 |   9116 |    12006 |    16597 |  7904 |
-| 2020 |     3404 |     4476 |   6016 |     8275 |    11955 |  5188 |
-| 2021 |    15860 |    20986 |  28895 |    40802 |    59436 | 21745 |
-| 2022 |     6863 |     8729 |  11646 |    16618 |    25205 | 24805 |
-| 2023 |    13946 |    18649 |  24618 |    32671 |    43809 | 24246 |
-| 2024 |     4526 |     5912 |   7480 |     9519 |    12383 |  5543 |
+| 2008 |    10298 |    13839 |  19682 |    28185 |    42258 | 14911 |
+| 2009 |    18823 |    26966 |  39551 |    57716 |    87487 | 37985 |
+| 2010 |    18217 |    26869 |  41794 |    67336 |   108259 | 66268 |
+| 2011 |    17096 |    23425 |  31349 |    42356 |    58033 | 34652 |
+| 2012 |     5917 |     8236 |  12059 |    17787 |    29054 | 16593 |
+| 2013 |     8098 |    10756 |  14314 |    19721 |    28653 | 13387 |
+| 2014 |     5033 |     6737 |   8939 |    12099 |    17688 | 12401 |
+| 2015 |     2049 |     2735 |   3553 |     4670 |     6738 |  2611 |
+| 2016 |     8073 |    10631 |  13875 |    18011 |    24452 | 17529 |
+| 2017 |    11596 |    15402 |  20191 |    27639 |    38948 | 30735 |
+| 2018 |    10139 |    13582 |  18264 |    23988 |    32658 | 17290 |
+| 2019 |     5044 |     6617 |   8613 |    11457 |    15576 |  7904 |
+| 2020 |     3181 |     4418 |   5785 |     7734 |    10928 |  5188 |
+| 2021 |    13912 |    19573 |  26741 |    37813 |    56102 | 21745 |
+| 2022 |     6507 |     8339 |  11105 |    15163 |    22318 | 24805 |
+| 2023 |    13521 |    17433 |  22866 |    29596 |    40155 | 24246 |
+| 2024 |     4270 |     5393 |   6855 |     8680 |    11634 |  5543 |
 
 The abundance plot shows the median (point) as well as the 66 and 95%
 posterior credible intervals. The red x shows the estimate based on
