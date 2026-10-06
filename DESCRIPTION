@@ -9,7 +9,8 @@ Description: Fits Bayesian models to repeated live-count surveys to estimate
     annual spawner abundance and run timing. Provides tools for model fitting,
     diagnostics, visualization, and extraction of abundance estimates.
 License: MIT + file LICENSE
-URL: https://github.com/SiRE-P/spawnBayes
+URL: https://sire-p.github.io/spawnBayes,
+     https://github.com/SiRE-P/spawnBayes
 BugReports: https://github.com/SiRE-P/spawnBayes/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
