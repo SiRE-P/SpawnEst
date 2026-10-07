@@ -62,7 +62,9 @@ make_stan_data <- function(data, priors) {
     year = dat$year_ind,
     day = dat$day,
     n_obs = nrow(dat),
-    live_counts = dat$spawner_counts
+    live_counts = dat$spawner_counts,
+    survey_error_group_id = as.integer(dat$survey_error_group),
+    n_survey_error_groups = nlevels(dat$survey_error_group)
   )
   
   list(

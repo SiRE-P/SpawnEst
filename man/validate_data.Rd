@@ -7,11 +7,30 @@
 validate_data(data)
 }
 \arguments{
-\item{data}{Input data frame.}
+\item{data}{Input data frame. Required columns are
+\code{date} and \code{spawner_counts}. Optional columns
+include \code{observer_efficiency}, \code{coverage}, and
+\code{survey_error_group}.}
 }
 \value{
 A validated and standardized data frame.
 }
 \description{
-Validate spawnBayes input data
+Validates and standardizes survey data for analysis with
+\code{spawnBayes}. Required fields are checked, dates are
+converted to \code{Date} format, observer efficiency and
+coverage values are standardized to proportions, and optional
+survey-error group classifications are validated.
+}
+\details{
+If \code{observer_efficiency} or \code{coverage} are supplied
+as percentages, they are automatically converted to
+proportions. Missing values in these columns are assumed to
+equal 1 and generate a warning.
+
+If supplied, \code{survey_error_group} is treated as a
+categorical grouping variable identifying observations that
+may differ in observation error. Categories containing fewer
+than 10 observations generate a warning because group-specific
+observation-error estimates may be poorly informed.
 }

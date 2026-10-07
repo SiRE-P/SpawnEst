@@ -1,8 +1,29 @@
 #' Validate spawnBayes input data
 #'
-#' @param data Input data frame.
+#' Validates and standardizes survey data for analysis with
+#' \code{spawnBayes}. Required fields are checked, dates are
+#' converted to \code{Date} format, observer efficiency and
+#' coverage values are standardized to proportions, and optional
+#' survey-error group classifications are validated.
+#'
+#' @param data Input data frame. Required columns are
+#'   \code{date} and \code{spawner_counts}. Optional columns
+#'   include \code{observer_efficiency}, \code{coverage}, and
+#'   \code{survey_error_group}.
 #'
 #' @return A validated and standardized data frame.
+#'
+#' @details
+#' If \code{observer_efficiency} or \code{coverage} are supplied
+#' as percentages, they are automatically converted to
+#' proportions. Missing values in these columns are assumed to
+#' equal 1 and generate a warning.
+#'
+#' If supplied, \code{survey_error_group} is treated as a
+#' categorical grouping variable identifying observations that
+#' may differ in observation error. Categories containing fewer
+#' than 10 observations generate a warning because group-specific
+#' observation-error estimates may be poorly informed.
 #'
 #' @export
 validate_data <- function(data) {
@@ -161,6 +182,62 @@ validate_data <- function(data) {
       "coverage must be between 0 and 1.",
       call. = FALSE
     )
+  
+  # Survey error groups
+  
+  has_error_groups <- "survey_error_group" %in% names(data)
+  
+  if (!has_error_groups)
+    data$survey_error_group <- "default"
+  
+  if (any(is.na(data$survey_error_group)))
+    stop(
+      "survey_error_group contains missing values.",
+      call. = FALSE
+    )
+  
+  data$survey_error_group <- trimws(
+    as.character(data$survey_error_group)
+  )
+  
+  if (any(data$survey_error_group == ""))
+    stop(
+      "survey_error_group contains blank values.",
+      call. = FALSE
+    )
+  
+  data$survey_error_group <- factor(
+    data$survey_error_group
+  )
+  
+  if (has_error_groups) {
+    
+    group_counts <- table(
+      data$survey_error_group
+    )
+    
+    if (any(group_counts < 10)) {
+      
+      sparse_groups <- paste(
+        names(group_counts)[group_counts < 10],
+        group_counts[group_counts < 10],
+        sep = " = ",
+        collapse = ", "
+      )
+      
+      warning(
+        paste0(
+          "Some survey_error_group categories contain fewer than ",
+          "10 observations (",
+          sparse_groups,
+          "). Consider combining sparse categories."
+        ),
+        call. = FALSE
+      )
+      
+    }
+    
+  }
   
   year_modes <- data |>
     dplyr::mutate(year = lubridate::year(date)) |>
