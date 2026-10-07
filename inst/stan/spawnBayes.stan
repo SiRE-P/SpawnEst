@@ -22,6 +22,8 @@ parameters {
   vector[n_years] log_run;
   vector<lower=1>[n_survey_error_groups]   live_phi;   // dispersion parameter on live fish sampling
   
+  real<lower=0, upper=1> p_outlier;
+  real<lower=0> outlier_multiplier;
 }
 
 transformed parameters{
@@ -74,9 +76,32 @@ model {
   log_run ~ normal(priors[1,1], priors[1,2]);  // mean  run log
   log(live_phi)   ~ normal(priors[7,1], priors[7,2]);
   
+  p_outlier ~ beta(1, 20);
+  outlier_multiplier ~ lognormal(log(10), 0.5);
   
   //likelihood
-  for(n in 1:n_obs){
-   live_counts[n] ~ neg_binomial_2(live_mu[n], live_phi[survey_error_group_id[n]]);
+  for (n in 1:n_obs) {
+    
+    real lp_regular = neg_binomial_2_lpmf( live_counts[n] |live_mu[n], live_phi[survey_error_group_id[n]]);
+    
+    real lp_outlier = neg_binomial_2_lpmf(live_counts[n] |live_mu[n], live_phi[survey_error_group_id[n]] /outlier_multiplier);
+    
+    target += log_mix(p_outlier, lp_outlier, lp_regular);
+  }
+}
+
+generated quantities {
+
+  vector[n_obs] p_is_outlier;
+
+  for (n in 1:n_obs) {
+
+    real lp_regular = neg_binomial_2_lpmf(live_counts[n] | live_mu[n], live_phi[survey_error_group_id[n]]);
+
+    real lp_outlier = neg_binomial_2_lpmf(live_counts[n] | live_mu[n], live_phi[survey_error_group_id[n]] / outlier_multiplier);
+
+    p_is_outlier[n] = exp(log(p_outlier) + lp_outlier -
+                          log_sum_exp(log(p_outlier) + lp_outlier,
+                                      log1m(p_outlier) + lp_regular));
   }
 }

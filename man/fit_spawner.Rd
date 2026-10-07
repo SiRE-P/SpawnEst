@@ -20,7 +20,10 @@ fit_spawner(
 )
 }
 \arguments{
-\item{data}{A data frame containing survey observations.}
+\item{data}{A data frame containing survey observations.
+Required columns are \code{date} and \code{spawner_counts}.
+Optional columns include \code{observer_efficiency},
+\code{coverage}, and \code{survey_error_group}.}
 
 \item{abundance}{Prior estimate of total spawner abundance.}
 
@@ -59,13 +62,28 @@ on either side of the run.}
 A \code{spawnBayes_fit} object.
 }
 \description{
-Fit the spawnBayes model to repeated spawner count surveys.
+Fit the spawnBayes model to repeated spawner-count surveys.
 }
 \details{
 The input data must contain a \code{date} column and a
 \code{spawner_counts} column.
 
-Optional \code{observer_efficiency} and \code{coverage}
-columns may also be supplied. If omitted, both
-are assumed to equal 1.
+Optional \code{observer_efficiency}, \code{coverage}, and
+\code{survey_error_group} columns may also be supplied.
+If omitted, observer efficiency and coverage are
+assumed to equal 1 and all observations are assigned
+to a common survey-error group.
+
+When a \code{survey_error_group} column is provided,
+spawnBayes estimates separate observation-dispersion
+parameters for each group. This can be used to account
+for differences in survey quality, survey method, or
+other factors expected to influence observation error.
+
+spawnBayes uses a mixture observation model to accommodate
+occasional anomalous survey counts. A small proportion of
+observations may be assigned to an outlier component with
+substantially larger observation variance. Posterior
+probabilities of outlier assignment can be visualized using
+\code{\link[=plot_run_curve]{plot_run_curve()}}.
 }

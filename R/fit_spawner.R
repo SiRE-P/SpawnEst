@@ -16,6 +16,13 @@
 #' parameters for each group. This can be used to account
 #' for differences in survey quality, survey method, or
 #' other factors expected to influence observation error.
+#' 
+#' spawnBayes uses a mixture observation model to accommodate
+#' occasional anomalous survey counts. A small proportion of
+#' observations may be assigned to an outlier component with
+#' substantially larger observation variance. Posterior
+#' probabilities of outlier assignment can be visualized using
+#' [plot_run_curve()].
 #'
 #' @param data A data frame containing survey observations.
 #'   Required columns are `date` and `spawner_counts`.
