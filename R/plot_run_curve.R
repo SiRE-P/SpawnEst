@@ -3,6 +3,10 @@
 #' Plot posterior estimates of spawners present through time
 #' against observed survey counts for each year.
 #'
+#' When an outlier observation model is used, point colours
+#' indicate the posterior probability that a survey belongs
+#' to the outlier component.
+#'
 #' Corrected survey counts used to fit the model are shown as
 #' filled points. If observer-efficiency or coverage corrections
 #' were applied, the original uncorrected survey counts are shown
@@ -13,7 +17,9 @@
 #'   Multiple intervals may be supplied (e.g., `c(66, 95)`).
 #'
 #' @return A ggplot object showing fitted run curves and observed
-#'   survey counts by year.
+#'   survey counts by year. When available, observation colours
+#'   indicate posterior probabilities of belonging to the outlier
+#'   observation component.
 #'
 #' @export
 plot_run_curve <- function(fit, CI = c(66, 95)) {
@@ -143,6 +149,14 @@ plot_run_curve <- function(fit, CI = c(66, 95)) {
       day = lubridate::yday(date)
     )
   
+  outlier_prob <- try(fit$fit$summary("p_is_outlier"), silent = TRUE)
+  
+  obs$p_is_outlier <-
+    if (!inherits(outlier_prob, "try-error"))
+      outlier_prob$mean
+  else
+    rep(0, nrow(obs))
+  
   show_uncorrected <-
     "spawner_counts_uncorrected" %in% names(obs) &&
     any(
@@ -185,10 +199,16 @@ plot_run_curve <- function(fit, CI = c(66, 95)) {
       data = obs,
       ggplot2::aes(
         x = day,
-        y = spawner_counts
+        y = spawner_counts,
+        colour = p_is_outlier
       ),
       inherit.aes = FALSE,
-      size = 1.2
+      size = 2
+    ) +
+    ggplot2::scale_colour_gradient(
+      low = "black",
+      high = "red",
+      name = "P(outlier)"
     )
   
   if (show_uncorrected) {

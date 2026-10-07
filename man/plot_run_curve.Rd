@@ -14,13 +14,19 @@ Multiple intervals may be supplied (e.g., \code{c(66, 95)}).}
 }
 \value{
 A ggplot object showing fitted run curves and observed
-survey counts by year.
+survey counts by year. When available, observation colours
+indicate posterior probabilities of belonging to the outlier
+observation component.
 }
 \description{
 Plot posterior estimates of spawners present through time
 against observed survey counts for each year.
 }
 \details{
+When an outlier observation model is used, point colours
+indicate the posterior probability that a survey belongs
+to the outlier component.
+
 Corrected survey counts used to fit the model are shown as
 filled points. If observer-efficiency or coverage corrections
 were applied, the original uncorrected survey counts are shown
