@@ -17,7 +17,7 @@ make_inits <- function(stan_data) {
     timing_raw = matrix(stats::rnorm(stan_data$n_years * 4, 0, 0.1),
                         nrow = stan_data$n_years,
                         ncol = 4),
-    live_phi = 50
+    live_phi = rep(exp(stan_data$priors[7,1]), stan_data$n_survey_error_groups)
   )
   
 }

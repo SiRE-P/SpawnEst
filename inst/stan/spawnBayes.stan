@@ -7,7 +7,11 @@ data {
   array[n_obs] int<lower=1, upper=n_years> year;
   array[n_obs] int day;
   array[n_obs] int live_counts;
+  
+  int<lower=1> n_survey_error_groups;
+  array[n_obs] int<lower=1, upper=n_survey_error_groups> survey_error_group_id;
 }
+
 parameters {
   // MVN timing parameters
   vector[4] timing_mu;
@@ -16,7 +20,7 @@ parameters {
   matrix[n_years, 4] timing_raw;
   
   vector[n_years] log_run;
-  real<lower=1>         live_phi;   // dispersion parameter on live fish sampling
+  vector<lower=1>[n_survey_error_groups]   live_phi;   // dispersion parameter on live fish sampling
   
 }
 
@@ -72,16 +76,7 @@ model {
   
   
   //likelihood
-  target += neg_binomial_2_lpmf(live_counts | live_mu, live_phi);
-}
-
-generated quantities{
-  vector[n_obs] log_lik;
-  for(i in 1:n_obs)
-  log_lik[i] = neg_binomial_2_lpmf(live_counts[i] | live_mu[i], live_phi);
-  
-  corr_matrix[4] Omega;
-  cov_matrix[4] Sigma;
-  Omega = multiply_lower_tri_self_transpose(L_Omega);  // reconstruct correlation matrix
-  Sigma = quad_form_diag(Omega, timing_sigma);         // full covariance matrix
+  for(n in 1:n_obs){
+   live_counts[n] ~ neg_binomial_2(live_mu[n], live_phi[survey_error_group_id[n]]);
+  }
 }

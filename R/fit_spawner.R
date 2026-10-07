@@ -1,15 +1,26 @@
 #' Fit a spawner abundance model
 #'
-#' Fit the spawnBayes model to repeated spawner count surveys.
+#' Fit the spawnBayes model to repeated spawner-count surveys.
 #'
 #' The input data must contain a `date` column and a
 #' `spawner_counts` column.
 #'
-#' Optional `observer_efficiency` and `coverage`
-#' columns may also be supplied. If omitted, both
-#' are assumed to equal 1.
+#' Optional `observer_efficiency`, `coverage`, and
+#' `survey_error_group` columns may also be supplied.
+#' If omitted, observer efficiency and coverage are
+#' assumed to equal 1 and all observations are assigned
+#' to a common survey-error group.
+#'
+#' When a `survey_error_group` column is provided,
+#' spawnBayes estimates separate observation-dispersion
+#' parameters for each group. This can be used to account
+#' for differences in survey quality, survey method, or
+#' other factors expected to influence observation error.
 #'
 #' @param data A data frame containing survey observations.
+#'   Required columns are `date` and `spawner_counts`.
+#'   Optional columns include `observer_efficiency`,
+#'   `coverage`, and `survey_error_group`.
 #' @param abundance Prior estimate of total spawner abundance.
 #' @param assumed_residence Assumed mean residence time (days), also known as survey life.
 #'   If supplied, this value is used to construct the residence-time
@@ -168,7 +179,8 @@ fit_spawner <- function(
       priors = priors,
       stan_inputs = stan_inputs,
       assumed_residence = assumed_residence,
-      TAUC = TAUC
+      TAUC = TAUC,
+      survey_error_groups = levels(data$survey_error_group)
     ),
     class = "spawnBayes_fit"
   )
