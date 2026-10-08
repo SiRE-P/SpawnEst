@@ -154,7 +154,7 @@ plot_run_curve(fit)
 
 # Outlier diagnostics  
 
-spawnBayes can identify surveys that deviate substantially from the overall run-timing pattern. These observations are not removed from the analysis; instead, the model estimates the probability that they arise from a higher-variance observation process and correspondingly reduces their influence on parameter estimation.
+`spawnBayes` can identify surveys that deviate substantially from the overall run-timing pattern. These observations are not removed from the analysis; instead, the model estimates the probability that they arise from a higher-variance observation process and correspondingly reduces their influence on parameter estimation.
 
 Surveys with elevated outlier probabilities may reflect counting errors, unusual survey conditions, inaccuracies in correction factors, or biological patterns that are not fully captured by the run-timing model. Elevated outlier probabilities do not necessarily indicate erroneous data. Rather, they identify observations that are difficult to reconcile with the fitted observation and run-timing processes.
 
