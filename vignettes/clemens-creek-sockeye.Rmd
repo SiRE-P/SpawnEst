@@ -107,7 +107,7 @@ The settings used in this vignette are intended to keep computation time
 reasonable. For applied analyses, users should always examine the
 diagnostic output and increase the number of iterations when recommended. 
 Even so, the model may require several minutes to fit.
-```{r fit-model, cache=TRUE, message=FALSE, warning=FALSE}
+```{r fit-model, cache=FALSE, message=FALSE, warning=FALSE}
 fit <- fit_spawner(clemens_sockeye, iter_warmup = 500, iter_sampling = 500, assumed_residence = 15.5, adapt_delta = 0.99, refresh = 0)
 ```
 
