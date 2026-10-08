@@ -1,6 +1,6 @@
 # Fit a spawner abundance model
 
-Fit the spawnBayes model to repeated spawner count surveys.
+Fit the spawnBayes model to repeated spawner-count surveys.
 
 ## Usage
 
@@ -12,6 +12,7 @@ fit_spawner(
   arrival_peak = NULL,
   arrival_quantile = 0.4,
   trim_zeros = TRUE,
+  outlier_model = TRUE,
   priors = NULL,
   chains = 4,
   iter_warmup = 1000,
@@ -25,7 +26,9 @@ fit_spawner(
 
 - data:
 
-  A data frame containing survey observations.
+  A data frame containing survey observations. Required columns are
+  `date` and `spawner_counts`. Optional columns include
+  `observer_efficiency`, `coverage`, and `survey_error_group`.
 
 - abundance:
 
@@ -54,10 +57,17 @@ fit_spawner(
   Logical. Remove repeated leading and trailing zero-count surveys
   within years while retaining a single zero on either side of the run.
 
+- outlier_model:
+
+  Logical. If TRUE, a robust observation model is used in which a small
+  proportion of surveys may arise from a higher-variance observation
+  process. This reduces the influence of anomalous surveys on model
+  fitting.
+
 - priors:
 
   Additional model priors produced by
-  [`default_priors()`](default_priors.md).
+  [`default_priors()`](https://sire-p.github.io/spawnBayes/reference/default_priors.md).
 
 - chains:
 
@@ -88,5 +98,18 @@ A `spawnBayes_fit` object.
 The input data must contain a `date` column and a `spawner_counts`
 column.
 
-Optional `observer_efficiency` and `coverage` columns may also be
-supplied. If omitted, both are assumed to equal 1.
+Optional `observer_efficiency`, `coverage`, and `survey_error_group`
+columns may also be supplied. If omitted, observer efficiency and
+coverage are assumed to equal 1 and all observations are assigned to a
+common survey-error group.
+
+When a `survey_error_group` column is provided, spawnBayes estimates
+separate observation-dispersion parameters for each group. This can be
+used to account for differences in survey quality, survey method, or
+other factors expected to influence observation error.
+
+If `outlier_model = TRUE`, spawnBayes uses a mixture observation model
+that allows a small proportion of surveys to arise from a
+higher-variance observation process. This reduces the influence of
+anomalous observations on model fitting and provides posterior
+probabilities of outlier status for each survey.

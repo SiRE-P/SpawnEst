@@ -6,7 +6,7 @@ list required by the spawnBayes Stan model.
 ## Usage
 
 ``` r
-make_stan_data(data, priors)
+make_stan_data(data, priors, outlier_model = TRUE)
 ```
 
 ## Arguments
@@ -18,7 +18,12 @@ make_stan_data(data, priors)
 - priors:
 
   A prior specification object returned by
-  [`default_priors()`](default_priors.md).
+  [`default_priors()`](https://sire-p.github.io/spawnBayes/reference/default_priors.md).
+
+- outlier_model:
+
+  Logical. If TRUE, include the outlier observation model in the Stan
+  data passed to spawnBayes.
 
 ## Value
 

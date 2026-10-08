@@ -69,7 +69,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sire-p.github.io/spawnBayes" class="external-link">spawnBayes</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sire-p.github.io/spawnBayes">spawnBayes</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a></span><span class="op">)</span></span>
@@ -90,6 +90,11 @@ associated uncertainty while allowing residence time to vary among
 years.</p>
 <p>The underlying methodology is described in Thompson et
 al. (2026).</p>
+<p>Additional features introduced after Thompson et al. (2026) include
+support for survey-error groups, allowing separate
+observation-dispersion parameters to be estimated for different survey
+types or quality classes, and an optional robust observation model that
+reduces the influence of anomalous survey counts.</p>
 <p>This vignette demonstrates a complete analysis using sockeye salmon
 survey data from Clemens Creek, BC, Canada. These data were provided by
 Diana McHugh, South Coast Stock Assessment, Fisheries and Oceans
@@ -111,8 +116,11 @@ Canada.</p>
 <h2 id="example-data">Example data<a class="anchor" aria-label="anchor" href="#example-data"></a>
 </h2>
 <p>Load in the example dataset and inspect it. The model requires a date
-column and a spawner_counts column. Optional observer_efficiency and
-coverage columns can be supplied to adjust observed counts.</p>
+column and a spawner_counts column. Optional observer_efficiency,
+coverage, and survey_error_group columns can be supplied. Observation
+efficiency and coverage are used to adjust observed counts, while
+survey_error_group allows separate observation-dispersion parameters to
+be estimated for different survey types or quality classes.</p>
 <p>In this case, dates are provided as character strings, and observer
 efficiency and coverage have been provided as percentages. These will be
 converted into the proper format in the data validation step.</p>
@@ -147,7 +155,14 @@ multiple run peaks.</p>
 <span><span class="co">#&gt;  Median :2017-10-28   Median : 1040.0   Median :0.8899      Median :0.9000  </span></span>
 <span><span class="co">#&gt;  Mean   :2018-01-09   Mean   : 2740.3   Mean   :0.8512      Mean   :0.8772  </span></span>
 <span><span class="co">#&gt;  3rd Qu.:2021-09-29   3rd Qu.: 3367.8   3rd Qu.:0.9570      3rd Qu.:1.0000  </span></span>
-<span><span class="co">#&gt;  Max.   :2024-11-15   Max.   :29651.0   Max.   :1.0000      Max.   :1.0000</span></span></code></pre></div>
+<span><span class="co">#&gt;  Max.   :2024-11-15   Max.   :29651.0   Max.   :1.0000      Max.   :1.0000  </span></span>
+<span><span class="co">#&gt;  survey_error_group</span></span>
+<span><span class="co">#&gt;  default:140       </span></span>
+<span><span class="co">#&gt;                    </span></span>
+<span><span class="co">#&gt;                    </span></span>
+<span><span class="co">#&gt;                    </span></span>
+<span><span class="co">#&gt;                    </span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="survey-observations">Survey observations<a class="anchor" aria-label="anchor" href="#survey-observations"></a>
@@ -157,7 +172,7 @@ multiple run peaks.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">clemens_sockeye</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html" class="external-link">year</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>, day <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/day.html" class="external-link">yday</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">day</span>, y <span class="op">=</span> <span class="va">spawner_counts</span>, fill <span class="op">=</span> <span class="va">observer_efficiency</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>pch <span class="op">=</span> <span class="fl">21</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">year</span>, scale <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">year</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
 <span>      strip.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -186,6 +201,11 @@ multiple run peaks.</p>
 <p>spawnBayes estimates annual run timing and abundance jointly across
 years. Information is shared among years through a hierarchical model,
 improving estimation in years with sparse survey data.</p>
+<p>By default, spawnBayes fits a robust observation model that allows a
+small proportion of surveys to arise from a higher-variance observation
+process. This reduces the influence of unusual surveys on abundance and
+run-timing estimates. The feature can be disabled using outlier_model =
+FALSE.</p>
 <p>The settings used in this vignette are intended to keep computation
 time reasonable. For applied analyses, users should always examine the
 diagnostic output and increase the number of iterations when
@@ -193,14 +213,14 @@ recommended. Even so, the model may require several minutes to fit.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_spawner.html">fit_spawner</a></span><span class="op">(</span><span class="va">clemens_sockeye</span>, iter_warmup <span class="op">=</span> <span class="fl">500</span>, iter_sampling <span class="op">=</span> <span class="fl">500</span>, assumed_residence <span class="op">=</span> <span class="fl">15.5</span>, adapt_delta <span class="op">=</span> <span class="fl">0.99</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running MCMC with 4 parallel chains...</span></span>
-<span><span class="co">#&gt; Chain 3 finished in 31.7 seconds.</span></span>
-<span><span class="co">#&gt; Chain 1 finished in 36.5 seconds.</span></span>
-<span><span class="co">#&gt; Chain 2 finished in 46.0 seconds.</span></span>
-<span><span class="co">#&gt; Chain 4 finished in 47.9 seconds.</span></span>
+<span><span class="co">#&gt; Chain 2 finished in 91.4 seconds.</span></span>
+<span><span class="co">#&gt; Chain 3 finished in 101.5 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1 finished in 102.4 seconds.</span></span>
+<span><span class="co">#&gt; Chain 4 finished in 102.2 seconds.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All 4 chains finished successfully.</span></span>
-<span><span class="co">#&gt; Mean chain execution time: 40.5 seconds.</span></span>
-<span><span class="co">#&gt; Total execution time: 48.4 seconds.</span></span></code></pre></div>
+<span><span class="co">#&gt; Mean chain execution time: 99.4 seconds.</span></span>
+<span><span class="co">#&gt; Total execution time: 102.7 seconds.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="model-diagnostics">Model diagnostics<a class="anchor" aria-label="anchor" href="#model-diagnostics"></a>
@@ -210,9 +230,9 @@ of MCMC sampling performance and model convergence.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   converged    quality divergences treedepth_hits max_rhat min_ess_bulk</span></span>
-<span><span class="co">#&gt; 1      TRUE acceptable           0              0     1.01          331</span></span>
+<span><span class="co">#&gt; 1      TRUE acceptable           0              0    1.009          318</span></span>
 <span><span class="co">#&gt;   min_ess_tail      recommendation</span></span>
-<span><span class="co">#&gt; 1          698 No action required.</span></span></code></pre></div>
+<span><span class="co">#&gt; 1          721 No action required.</span></span></code></pre></div>
 <p>In this example, all diagnostic checks were acceptable. No divergent
 transitions were detected, no maximum tree-depth warnings were
 encountered, and the largest Rhat value was close to 1. Effective sample
@@ -251,22 +271,53 @@ prior assumptions are reasonable.</p>
 </h2>
 <p>The fitted curves represent the estimated number of spawners present
 through time. Shaded regions show the 66 and 95% credible intervals.
-Observed survey counts are shown as points. The open circles show the
+Observed survey counts are shown as points. When the outlier model is
+enabled, point colour indicates the posterior probability that a survey
+belongs to the outlier observation component. The open circles show the
 uncorrected survey counts. The filled circles are corrected for observer
 efficiency and survey coverage.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_run_curve.html">plot_run_curve</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<p><img src="clemens-creek-sockeye_files/figure-html/run-curves-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="clemens-creek-sockeye_files/figure-html/run-curves-1.png" class="r-plt" alt="" width="768">
+# Outlier diagnostics</p>
+<p>spawnBayes can identify surveys that deviate substantially from the
+overall run-timing pattern. These observations are not removed from the
+analysis; instead, the model estimates the probability that they arise
+from a higher-variance observation process and correspondingly reduces
+their influence on parameter estimation.</p>
+<p>Surveys with elevated outlier probabilities may reflect counting
+errors, unusual survey conditions, inaccuracies in correction factors,
+or biological patterns that are not fully captured by the run-timing
+model. Elevated outlier probabilities do not necessarily indicate
+erroneous data. Rather, they identify observations that are difficult to
+reconcile with the fitted observation and run-timing processes.</p>
+<p>Users are encouraged to inspect years containing surveys with high
+outlier probabilities and assess whether the fitted run-timing model is
+appropriate for estimating spawner abundance.</p>
 </div>
 <div class="section level2">
 <h2 id="abundance-estimates">Abundance estimates<a class="anchor" aria-label="anchor" href="#abundance-estimates"></a>
 </h2>
-<p>Estimated annual abundance is obtained by integrating the estimated
-arrival and exit processes over the spawning season.</p>
+<p>The abundance summary also reports the number of surveys within each
+year having posterior outlier probabilities greater than 0.25. This
+provides a simple indicator of observations that may have been
+down-weighted by the robust observation model. This value should be
+interpreted as a diagnostic rather than a measure of data quality.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">abund</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abundance.html">abundance</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">abund</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="6%">
+<col width="11%">
+<col width="11%">
+<col width="8%">
+<col width="11%">
+<col width="11%">
+<col width="16%">
+<col width="16%">
+<col width="7%">
+</colgroup>
 <thead><tr class="header">
 <th align="right">year</th>
 <th align="right">lower_95</th>
@@ -274,160 +325,196 @@ arrival and exit processes over the spawning season.</p>
 <th align="right">median</th>
 <th align="right">upper_66</th>
 <th align="right">upper_95</th>
+<th align="right">n_outliers.x</th>
+<th align="right">n_outliers.y</th>
 <th align="right">TAUC</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="right">2008</td>
-<td align="right">10298</td>
-<td align="right">13839</td>
-<td align="right">19682</td>
-<td align="right">28185</td>
-<td align="right">42258</td>
+<td align="right">7667</td>
+<td align="right">13253</td>
+<td align="right">19440</td>
+<td align="right">27912</td>
+<td align="right">42339</td>
+<td align="right">NA</td>
+<td align="right">1</td>
 <td align="right">14911</td>
 </tr>
 <tr class="even">
 <td align="right">2009</td>
-<td align="right">18823</td>
-<td align="right">26966</td>
-<td align="right">39551</td>
-<td align="right">57716</td>
-<td align="right">87487</td>
+<td align="right">18679</td>
+<td align="right">25834</td>
+<td align="right">36456</td>
+<td align="right">54909</td>
+<td align="right">83292</td>
+<td align="right">NA</td>
+<td align="right">0</td>
 <td align="right">37985</td>
 </tr>
 <tr class="odd">
 <td align="right">2010</td>
-<td align="right">18217</td>
-<td align="right">26869</td>
-<td align="right">41794</td>
-<td align="right">67336</td>
-<td align="right">108259</td>
+<td align="right">19414</td>
+<td align="right">27714</td>
+<td align="right">39614</td>
+<td align="right">61947</td>
+<td align="right">98563</td>
+<td align="right">NA</td>
+<td align="right">0</td>
 <td align="right">66268</td>
 </tr>
 <tr class="even">
 <td align="right">2011</td>
-<td align="right">17096</td>
-<td align="right">23425</td>
-<td align="right">31349</td>
-<td align="right">42356</td>
-<td align="right">58033</td>
+<td align="right">18543</td>
+<td align="right">25176</td>
+<td align="right">33701</td>
+<td align="right">43741</td>
+<td align="right">58053</td>
+<td align="right">NA</td>
+<td align="right">1</td>
 <td align="right">34652</td>
 </tr>
 <tr class="odd">
 <td align="right">2012</td>
-<td align="right">5917</td>
-<td align="right">8236</td>
-<td align="right">12059</td>
-<td align="right">17787</td>
-<td align="right">29054</td>
+<td align="right">6374</td>
+<td align="right">9414</td>
+<td align="right">13689</td>
+<td align="right">20310</td>
+<td align="right">32988</td>
+<td align="right">NA</td>
+<td align="right">1</td>
 <td align="right">16593</td>
 </tr>
 <tr class="even">
 <td align="right">2013</td>
-<td align="right">8098</td>
-<td align="right">10756</td>
-<td align="right">14314</td>
-<td align="right">19721</td>
-<td align="right">28653</td>
+<td align="right">8658</td>
+<td align="right">11155</td>
+<td align="right">14245</td>
+<td align="right">18648</td>
+<td align="right">25445</td>
+<td align="right">NA</td>
+<td align="right">0</td>
 <td align="right">13387</td>
 </tr>
 <tr class="odd">
 <td align="right">2014</td>
-<td align="right">5033</td>
-<td align="right">6737</td>
-<td align="right">8939</td>
-<td align="right">12099</td>
-<td align="right">17688</td>
+<td align="right">5171</td>
+<td align="right">6546</td>
+<td align="right">8220</td>
+<td align="right">10670</td>
+<td align="right">13892</td>
+<td align="right">NA</td>
+<td align="right">0</td>
 <td align="right">12401</td>
 </tr>
 <tr class="even">
 <td align="right">2015</td>
-<td align="right">2049</td>
-<td align="right">2735</td>
-<td align="right">3553</td>
-<td align="right">4670</td>
-<td align="right">6738</td>
+<td align="right">2042</td>
+<td align="right">2695</td>
+<td align="right">3366</td>
+<td align="right">4225</td>
+<td align="right">5467</td>
+<td align="right">NA</td>
+<td align="right">1</td>
 <td align="right">2611</td>
 </tr>
 <tr class="odd">
 <td align="right">2016</td>
-<td align="right">8073</td>
-<td align="right">10631</td>
-<td align="right">13875</td>
-<td align="right">18011</td>
-<td align="right">24452</td>
+<td align="right">7706</td>
+<td align="right">9864</td>
+<td align="right">12443</td>
+<td align="right">15854</td>
+<td align="right">21253</td>
+<td align="right">NA</td>
+<td align="right">2</td>
 <td align="right">17529</td>
 </tr>
 <tr class="even">
 <td align="right">2017</td>
-<td align="right">11596</td>
-<td align="right">15402</td>
-<td align="right">20191</td>
-<td align="right">27639</td>
-<td align="right">38948</td>
+<td align="right">8595</td>
+<td align="right">11951</td>
+<td align="right">17173</td>
+<td align="right">24746</td>
+<td align="right">37650</td>
+<td align="right">NA</td>
+<td align="right">4</td>
 <td align="right">30735</td>
 </tr>
 <tr class="odd">
 <td align="right">2018</td>
-<td align="right">10139</td>
-<td align="right">13582</td>
-<td align="right">18264</td>
-<td align="right">23988</td>
-<td align="right">32658</td>
+<td align="right">10247</td>
+<td align="right">13166</td>
+<td align="right">16854</td>
+<td align="right">22009</td>
+<td align="right">28915</td>
+<td align="right">NA</td>
+<td align="right">1</td>
 <td align="right">17290</td>
 </tr>
 <tr class="even">
 <td align="right">2019</td>
-<td align="right">5044</td>
-<td align="right">6617</td>
-<td align="right">8613</td>
-<td align="right">11457</td>
-<td align="right">15576</td>
+<td align="right">5301</td>
+<td align="right">6863</td>
+<td align="right">8605</td>
+<td align="right">10926</td>
+<td align="right">14021</td>
+<td align="right">NA</td>
+<td align="right">0</td>
 <td align="right">7904</td>
 </tr>
 <tr class="odd">
 <td align="right">2020</td>
-<td align="right">3181</td>
-<td align="right">4418</td>
-<td align="right">5785</td>
-<td align="right">7734</td>
-<td align="right">10928</td>
+<td align="right">3426</td>
+<td align="right">4285</td>
+<td align="right">5409</td>
+<td align="right">6976</td>
+<td align="right">9124</td>
+<td align="right">NA</td>
+<td align="right">0</td>
 <td align="right">5188</td>
 </tr>
 <tr class="even">
 <td align="right">2021</td>
-<td align="right">13912</td>
-<td align="right">19573</td>
-<td align="right">26741</td>
-<td align="right">37813</td>
-<td align="right">56102</td>
+<td align="right">15719</td>
+<td align="right">21061</td>
+<td align="right">27755</td>
+<td align="right">37033</td>
+<td align="right">52638</td>
+<td align="right">NA</td>
+<td align="right">0</td>
 <td align="right">21745</td>
 </tr>
 <tr class="odd">
 <td align="right">2022</td>
-<td align="right">6507</td>
-<td align="right">8339</td>
-<td align="right">11105</td>
-<td align="right">15163</td>
-<td align="right">22318</td>
+<td align="right">3782</td>
+<td align="right">4799</td>
+<td align="right">6063</td>
+<td align="right">8176</td>
+<td align="right">13283</td>
+<td align="right">NA</td>
+<td align="right">3</td>
 <td align="right">24805</td>
 </tr>
 <tr class="even">
 <td align="right">2023</td>
-<td align="right">13521</td>
-<td align="right">17433</td>
-<td align="right">22866</td>
-<td align="right">29596</td>
-<td align="right">40155</td>
+<td align="right">11521</td>
+<td align="right">15966</td>
+<td align="right">21717</td>
+<td align="right">29003</td>
+<td align="right">38825</td>
+<td align="right">NA</td>
+<td align="right">2</td>
 <td align="right">24246</td>
 </tr>
 <tr class="odd">
 <td align="right">2024</td>
-<td align="right">4270</td>
-<td align="right">5393</td>
-<td align="right">6855</td>
-<td align="right">8680</td>
-<td align="right">11634</td>
+<td align="right">4221</td>
+<td align="right">5330</td>
+<td align="right">6665</td>
+<td align="right">8291</td>
+<td align="right">10554</td>
+<td align="right">NA</td>
+<td align="right">1</td>
 <td align="right">5543</td>
 </tr>
 </tbody>

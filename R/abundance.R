@@ -41,7 +41,16 @@ abundance <- function(fit, CI = c(66, 95), outlier_p_thresh = 0.25) {
     silent = TRUE
   )
   
-  out$n_outliers <- NA_integer_
+  out <- summarize_draws(
+    abundance_draws,
+    fit$stan_inputs$year_lookup$year,
+    CI
+  )
+  
+  outlier_prob <- try(
+    fit$fit$summary("p_is_outlier"),
+    silent = TRUE
+  )
   
   if (!inherits(outlier_prob, "try-error")) {
     
@@ -64,6 +73,11 @@ abundance <- function(fit, CI = c(66, 95), outlier_p_thresh = 0.25) {
         outlier_years,
         by = "year"
       )
+    
+  } else {
+    
+    out$n_outliers <- NA_integer_
+    
   }
     
   

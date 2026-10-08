@@ -151,7 +151,7 @@ Observed survey counts are shown as points. When the outlier model is enabled, p
 ```{r run-curves, fig.width=8, fig.height=7}
 plot_run_curve(fit)
 ```
-# Outlier diagnostics
+# Outlier diagnostics  
 
 spawnBayes can identify surveys that deviate substantially from the overall run-timing pattern. These observations are not removed from the analysis; instead, the model estimates the probability that they arise from a higher-variance observation process and correspondingly reduces their influence on parameter estimation.
 

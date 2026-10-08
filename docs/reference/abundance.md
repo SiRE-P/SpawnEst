@@ -6,7 +6,7 @@ model.
 ## Usage
 
 ``` r
-abundance(fit, CI = c(66, 95))
+abundance(fit, CI = c(66, 95), outlier_p_thresh = 0.25)
 ```
 
 ## Arguments
@@ -19,8 +19,14 @@ abundance(fit, CI = c(66, 95))
 
   Credible interval widths to report.
 
+- outlier_p_thresh:
+
+  Probability threshold used to classify surveys as potential outliers
+  when reporting annual outlier counts.
+
 ## Value
 
-A data frame containing annual abundance estimates. If an assumed
-residence time was supplied when fitting the model, traditional TAUC
-abundance estimates are also returned.
+A data frame containing annual abundance estimates. If an outlier
+observation model was fitted, the output also includes the number of
+surveys within each year having posterior outlier probabilities
+exceeding `outlier_p_thresh`.
