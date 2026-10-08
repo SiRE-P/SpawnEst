@@ -11,6 +11,7 @@ fit_spawner(
   arrival_peak = NULL,
   arrival_quantile = 0.4,
   trim_zeros = TRUE,
+  outlier_model = TRUE,
   priors = NULL,
   chains = 4,
   iter_warmup = 1000,
@@ -44,6 +45,11 @@ Ignored when \code{arrival_peak} is supplied.}
 \item{trim_zeros}{Logical. Remove repeated leading and trailing
 zero-count surveys within years while retaining a single zero
 on either side of the run.}
+
+\item{outlier_model}{Logical. If TRUE, a robust observation
+model is used in which a small proportion of surveys may
+arise from a higher-variance observation process. This
+reduces the influence of anomalous surveys on model fitting.}
 
 \item{priors}{Additional model priors produced by
 \code{\link[=default_priors]{default_priors()}}.}
@@ -80,10 +86,10 @@ parameters for each group. This can be used to account
 for differences in survey quality, survey method, or
 other factors expected to influence observation error.
 
-spawnBayes uses a mixture observation model to accommodate
-occasional anomalous survey counts. A small proportion of
-observations may be assigned to an outlier component with
-substantially larger observation variance. Posterior
-probabilities of outlier assignment can be visualized using
-\code{\link[=plot_run_curve]{plot_run_curve()}}.
+If \code{outlier_model = TRUE}, spawnBayes uses a mixture
+observation model that allows a small proportion of surveys
+to arise from a higher-variance observation process. This
+reduces the influence of anomalous observations on model
+fitting and provides posterior probabilities of outlier
+status for each survey.
 }

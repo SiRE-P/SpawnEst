@@ -4,17 +4,22 @@
 \alias{abundance}
 \title{Extract abundance estimates}
 \usage{
-abundance(fit, CI = c(66, 95))
+abundance(fit, CI = c(66, 95), outlier_p_thresh = 0.25)
 }
 \arguments{
 \item{fit}{A fitted spawnBayes model.}
 
 \item{CI}{Credible interval widths to report.}
+
+\item{outlier_p_thresh}{Probability threshold used to
+classify surveys as potential outliers when reporting
+annual outlier counts.}
 }
 \value{
 A data frame containing annual abundance estimates.
-If an assumed residence time was supplied when fitting the
-model, traditional TAUC abundance estimates are also returned.
+If an outlier observation model was fitted, the output also
+includes the number of surveys within each year having
+posterior outlier probabilities exceeding \code{outlier_p_thresh}.
 }
 \description{
 Extract annual spawner abundance estimates from a fitted

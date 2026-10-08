@@ -4,13 +4,16 @@
 \alias{make_stan_data}
 \title{Construct Stan data for spawnBayes}
 \usage{
-make_stan_data(data, priors)
+make_stan_data(data, priors, outlier_model = TRUE)
 }
 \arguments{
 \item{data}{A validated data frame containing survey observations.}
 
 \item{priors}{A prior specification object returned by
 \code{\link[=default_priors]{default_priors()}}.}
+
+\item{outlier_model}{Logical. If TRUE, include the outlier
+observation model in the Stan data passed to spawnBayes.}
 }
 \value{
 A list containing:

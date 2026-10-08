@@ -17,12 +17,13 @@
 #' for differences in survey quality, survey method, or
 #' other factors expected to influence observation error.
 #' 
-#' spawnBayes uses a mixture observation model to accommodate
-#' occasional anomalous survey counts. A small proportion of
-#' observations may be assigned to an outlier component with
-#' substantially larger observation variance. Posterior
-#' probabilities of outlier assignment can be visualized using
-#' [plot_run_curve()].
+#' If `outlier_model = TRUE`, spawnBayes uses a mixture
+#' observation model that allows a small proportion of surveys
+#' to arise from a higher-variance observation process. This
+#' reduces the influence of anomalous observations on model
+#' fitting and provides posterior probabilities of outlier
+#' status for each survey.
+#'
 #'
 #' @param data A data frame containing survey observations.
 #'   Required columns are `date` and `spawner_counts`.
@@ -43,6 +44,10 @@
 #' @param trim_zeros Logical. Remove repeated leading and trailing
 #'   zero-count surveys within years while retaining a single zero
 #'   on either side of the run.
+#' @param outlier_model Logical. If TRUE, a robust observation
+#'   model is used in which a small proportion of surveys may
+#'   arise from a higher-variance observation process. This
+#'   reduces the influence of anomalous surveys on model fitting.
 #' @param priors Additional model priors produced by
 #'   [default_priors()].
 #' @param chains Number of MCMC chains.
@@ -61,6 +66,7 @@ fit_spawner <- function(
     arrival_peak = NULL,
     arrival_quantile = 0.4,
     trim_zeros = TRUE,
+    outlier_model = TRUE,
     priors = NULL,
     chains = 4,
     iter_warmup = 1000,
@@ -157,7 +163,8 @@ fit_spawner <- function(
   
   stan_inputs <- make_stan_data(
     data = data,
-    priors = priors
+    priors = priors,
+    outlier_model = outlier_model
   )
   
   stan_file <- system.file(
@@ -187,7 +194,8 @@ fit_spawner <- function(
       stan_inputs = stan_inputs,
       assumed_residence = assumed_residence,
       TAUC = TAUC,
-      survey_error_groups = levels(data$survey_error_group)
+      survey_error_groups = levels(data$survey_error_group),
+      outlier_model = outlier_model
     ),
     class = "spawnBayes_fit"
   )

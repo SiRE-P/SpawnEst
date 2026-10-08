@@ -6,6 +6,8 @@
 #' @param data A validated data frame containing survey observations.
 #' @param priors A prior specification object returned by
 #'   [default_priors()].
+#' @param outlier_model Logical. If TRUE, include the outlier
+#'   observation model in the Stan data passed to spawnBayes.
 #'
 #' @return A list containing:
 #' \describe{
@@ -15,7 +17,7 @@
 #' }
 #'
 #' @keywords internal
-make_stan_data <- function(data, priors) {
+make_stan_data <- function(data, priors, outlier_model = TRUE) {
   
   if ("stream" %in% names(data))
     stop("Multi-stream fitting is not yet implemented.", call. = FALSE)
@@ -64,7 +66,8 @@ make_stan_data <- function(data, priors) {
     n_obs = nrow(dat),
     live_counts = dat$spawner_counts,
     survey_error_group_id = as.integer(dat$survey_error_group),
-    n_survey_error_groups = nlevels(dat$survey_error_group)
+    n_survey_error_groups = nlevels(dat$survey_error_group),
+    outlier_model = as.integer(outlier_model)
   )
   
   list(
