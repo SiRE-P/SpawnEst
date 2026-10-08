@@ -152,14 +152,14 @@ recommended. Even so, the model may require several minutes to fit.
 ``` r
 fit <- fit_spawner(clemens_sockeye, iter_warmup = 500, iter_sampling = 500, assumed_residence = 15.5, adapt_delta = 0.99, refresh = 0)
 #> Running MCMC with 4 parallel chains...
-#> Chain 2 finished in 91.4 seconds.
-#> Chain 3 finished in 101.5 seconds.
-#> Chain 1 finished in 102.4 seconds.
-#> Chain 4 finished in 102.2 seconds.
+#> Chain 1 finished in 64.6 seconds.
+#> Chain 4 finished in 85.5 seconds.
+#> Chain 2 finished in 87.2 seconds.
+#> Chain 3 finished in 93.6 seconds.
 #> 
 #> All 4 chains finished successfully.
-#> Mean chain execution time: 99.4 seconds.
-#> Total execution time: 102.7 seconds.
+#> Mean chain execution time: 82.7 seconds.
+#> Total execution time: 94.0 seconds.
 ```
 
 ## Model diagnostics
@@ -172,9 +172,9 @@ model convergence.
 ``` r
 diagnostics(fit)
 #>   converged    quality divergences treedepth_hits max_rhat min_ess_bulk
-#> 1      TRUE acceptable           0              0    1.009          318
+#> 1      TRUE acceptable           0              0    1.008          331
 #>   min_ess_tail      recommendation
-#> 1          721 No action required.
+#> 1          636 No action required.
 ```
 
 In this example, all diagnostic checks were acceptable. No divergent
@@ -226,10 +226,11 @@ efficiency and survey coverage.
 plot_run_curve(fit)
 ```
 
-![](clemens-creek-sockeye_files/figure-html/run-curves-1.png) \# Outlier
-diagnostics
+![](clemens-creek-sockeye_files/figure-html/run-curves-1.png)
 
-spawnBayes can identify surveys that deviate substantially from the
+## Outlier diagnostics
+
+`spawnBayes` can identify surveys that deviate substantially from the
 overall run-timing pattern. These observations are not removed from the
 analysis; instead, the model estimates the probability that they arise
 from a higher-variance observation process and correspondingly reduces
@@ -259,25 +260,25 @@ abund <- abundance(fit)
 knitr::kable(abund)
 ```
 
-| year | lower_95 | lower_66 | median | upper_66 | upper_95 | n_outliers.x | n_outliers.y |  TAUC |
-|-----:|---------:|---------:|-------:|---------:|---------:|-------------:|-------------:|------:|
-| 2008 |     7667 |    13253 |  19440 |    27912 |    42339 |           NA |            1 | 14911 |
-| 2009 |    18679 |    25834 |  36456 |    54909 |    83292 |           NA |            0 | 37985 |
-| 2010 |    19414 |    27714 |  39614 |    61947 |    98563 |           NA |            0 | 66268 |
-| 2011 |    18543 |    25176 |  33701 |    43741 |    58053 |           NA |            1 | 34652 |
-| 2012 |     6374 |     9414 |  13689 |    20310 |    32988 |           NA |            1 | 16593 |
-| 2013 |     8658 |    11155 |  14245 |    18648 |    25445 |           NA |            0 | 13387 |
-| 2014 |     5171 |     6546 |   8220 |    10670 |    13892 |           NA |            0 | 12401 |
-| 2015 |     2042 |     2695 |   3366 |     4225 |     5467 |           NA |            1 |  2611 |
-| 2016 |     7706 |     9864 |  12443 |    15854 |    21253 |           NA |            2 | 17529 |
-| 2017 |     8595 |    11951 |  17173 |    24746 |    37650 |           NA |            4 | 30735 |
-| 2018 |    10247 |    13166 |  16854 |    22009 |    28915 |           NA |            1 | 17290 |
-| 2019 |     5301 |     6863 |   8605 |    10926 |    14021 |           NA |            0 |  7904 |
-| 2020 |     3426 |     4285 |   5409 |     6976 |     9124 |           NA |            0 |  5188 |
-| 2021 |    15719 |    21061 |  27755 |    37033 |    52638 |           NA |            0 | 21745 |
-| 2022 |     3782 |     4799 |   6063 |     8176 |    13283 |           NA |            3 | 24805 |
-| 2023 |    11521 |    15966 |  21717 |    29003 |    38825 |           NA |            2 | 24246 |
-| 2024 |     4221 |     5330 |   6665 |     8291 |    10554 |           NA |            1 |  5543 |
+| year | lower_95 | lower_66 | median | upper_66 | upper_95 | n_outliers |  TAUC |
+|-----:|---------:|---------:|-------:|---------:|---------:|-----------:|------:|
+| 2008 |     7708 |    13187 |  19315 |    28130 |    40713 |          1 | 14911 |
+| 2009 |    19454 |    26576 |  36466 |    53249 |    78069 |          0 | 37985 |
+| 2010 |    19535 |    27652 |  40510 |    63387 |   100690 |          0 | 66268 |
+| 2011 |    17615 |    25101 |  33728 |    45385 |    63006 |          1 | 34652 |
+| 2012 |     6588 |     9616 |  13803 |    20583 |    34785 |          1 | 16593 |
+| 2013 |     8844 |    11167 |  14329 |    18779 |    25889 |          0 | 13387 |
+| 2014 |     5244 |     6576 |   8321 |    10696 |    14330 |          0 | 12401 |
+| 2015 |     2219 |     2728 |   3352 |     4192 |     5254 |          1 |  2611 |
+| 2016 |     7719 |     9931 |  12699 |    16265 |    21174 |          2 | 17529 |
+| 2017 |     8374 |    11848 |  17224 |    25358 |    36588 |          4 | 30735 |
+| 2018 |    10445 |    13163 |  16873 |    21921 |    28663 |          1 | 17290 |
+| 2019 |     5363 |     6949 |   8732 |    11124 |    14185 |          0 |  7904 |
+| 2020 |     3384 |     4285 |   5414 |     6963 |     9381 |          0 |  5188 |
+| 2021 |    16301 |    21329 |  28013 |    37274 |    51013 |          0 | 21745 |
+| 2022 |     3925 |     4817 |   6135 |     8338 |    13446 |          3 | 24805 |
+| 2023 |    11344 |    15849 |  21654 |    29725 |    40093 |          2 | 24246 |
+| 2024 |     4323 |     5486 |   6703 |     8382 |    10610 |          1 |  5543 |
 
 The abundance plot shows the median (point) as well as the 66 and 95%
 posterior credible intervals. The red x shows the estimate based on
