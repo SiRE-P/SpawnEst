@@ -161,7 +161,10 @@ Surveys with elevated outlier probabilities may reflect counting errors, unusual
 Users are encouraged to inspect years containing surveys with high outlier probabilities and assess whether the fitted run-timing model is appropriate for estimating spawner abundance.
 
 # Abundance estimates
-The abundance summary also reports the number of surveys within each year having posterior outlier probabilities greater than 0.25. This provides a simple indicator of observations that may have been down-weighted by the robust observation model. This value should be interpreted as a diagnostic rather than a measure of data quality.
+
+The abundance summary reports posterior median abundance estimates and credible intervals for each year. When residence time is supplied, traditional trapezoidal area under the curve (TAUC) abundance estimates are also reported, together with the percent difference between the posterior median abundance estimate and the corresponding TAUC estimate.
+
+Two diagnostic indicators are included in the abundance table. The `multimodal` column identifies years with evidence of multiple major run-timing peaks, which may violate the model assumption of a single seasonal peak. The `n_outliers` column reports the number of surveys within each year having posterior outlier probabilities greater than 0.25. These diagnostics should be interpreted as indicators of potential model-data conflict rather than measures of data quality.
 ```{r abundance}
 abund <- abundance(fit)
 knitr::kable(abund)
