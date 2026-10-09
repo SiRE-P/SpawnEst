@@ -64,8 +64,8 @@ plot_timing <- function(fit, CI = c(66, 95), format = c("yday", "date")) {
     p <- p +
       ggplot2::geom_errorbar(
         ggplot2::aes(
-          ymin = .data[[paste0("lower_", ci)]],
-          ymax = .data[[paste0("upper_", ci)]]
+          ymin = .data[[paste0("lwr_", ci)]],
+          ymax = .data[[paste0("upr_", ci)]]
         ),
         width = 0,
         linewidth = seq(0.4, 1.1, length.out = length(CI))[i]

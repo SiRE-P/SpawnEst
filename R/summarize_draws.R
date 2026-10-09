@@ -27,13 +27,13 @@ summarize_draws <- function(draws, years, CI = c(66, 95)) {
       probs = c(alpha, 1 - alpha)
     ))
     
-    out[[paste0("lower_", ci)]] <- qs[, 1]
-    out[[paste0("upper_", ci)]] <- qs[, 2]
+    out[[paste0("lwr_", ci)]] <- qs[, 1]
+    out[[paste0("upr_", ci)]] <- qs[, 2]
     
   }
   
-  lower_cols <- paste0("lower_", rev(CI))
-  upper_cols <- paste0("upper_", CI)
+  lower_cols <- paste0("lwr_", rev(CI))
+  upper_cols <- paste0("upr_", CI)
   
   out <- out[, c("year", lower_cols, "median", upper_cols)]
   
