@@ -24,6 +24,12 @@
 #' may differ in observation error. Categories containing fewer
 #' than 10 observations generate a warning because group-specific
 #' observation-error estimates may be poorly informed.
+#' 
+#' The function also evaluates annual run-timing patterns for
+#' evidence of multiple major peaks. A warning is generated if
+#' potentially multimodal run timing is detected because
+#' spawnBayes assumes a single seasonal peak in spawner
+#' abundance.
 #'
 #' @export
 validate_data <- function(data) {
@@ -239,66 +245,9 @@ validate_data <- function(data) {
     
   }
   
-  year_modes <- data |>
-    dplyr::mutate(year = lubridate::year(date)) |>
-    dplyr::group_by(year) |>
-    dplyr::group_modify(~{
-      
-      if (nrow(.x) < 5)
-        return(data.frame(n_major_peaks = 1))
-      
-      sm <- stats::smooth.spline(
-        lubridate::yday(.x$date),
-        .x$spawner_counts
-      )
-      
-      pred <- predict(
-        sm,
-        seq(
-          min(lubridate::yday(.x$date)),
-          max(lubridate::yday(.x$date)),
-          by = 1
-        )
-      )$y
-      
-      peak_ind <- which(diff(sign(diff(pred))) < 0) + 1
-      
-      if (length(peak_ind) > 1) {
-        
-        peak_heights <- pred[peak_ind]
-        
-        major_peaks <- peak_ind[
-          peak_heights > 0.5 * max(peak_heights)
-        ]
-        
-        peak_days <- seq(
-          min(lubridate::yday(.x$date)),
-          max(lubridate::yday(.x$date)),
-          by = 1
-        )[major_peaks]
-        
-        n_major_peaks <- 1
-        
-        if (length(peak_days) > 1) {
-          
-          peak_sep <- diff(sort(peak_days))
-          
-          # Count only peaks separated by at least 10 days.
-          # This avoids flagging small wiggles around a dominant peak.
-
-          n_major_peaks <- 1 + sum(peak_sep >= 10)
-          
-        }
-        
-      } else {
-        
-        n_major_peaks <- 1
-      }
-      
-      data.frame(n_major_peaks = n_major_peaks)
-      
-    })  
-  n_multimodal <- sum(year_modes$n_major_peaks > 1)
+  year_modes <- identify_multimodal_years(data)
+  
+  n_multimodal <- sum(year_modes$multimodal)
   
   if (n_multimodal > 0)
     warning(

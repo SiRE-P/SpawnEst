@@ -56,7 +56,10 @@
 #' @param adapt_delta Stan adaptation target acceptance rate.
 #' @param refresh refresh Frequency of CmdStan progress updates.
 #'
-#' @return A `spawnBayes_fit` object.
+#' @return A `spawnBayes_fit` object containing the fitted
+#' model, processed survey data, annual TAUC estimates when
+#' available, and run-timing diagnostic information including
+#' potential multimodal years.
 #'
 #' @export
 fit_spawner <- function(
@@ -112,6 +115,8 @@ fit_spawner <- function(
   }
   
   data <- validate_data(data)
+  
+  multimodal_years <- identify_multimodal_years(data)
   
   if (trim_zeros) {
     
@@ -195,7 +200,8 @@ fit_spawner <- function(
       assumed_residence = assumed_residence,
       TAUC = TAUC,
       survey_error_groups = levels(data$survey_error_group),
-      outlier_model = outlier_model
+      outlier_model = outlier_model,
+      multimodal_years = multimodal_years
     ),
     class = "spawnBayes_fit"
   )
