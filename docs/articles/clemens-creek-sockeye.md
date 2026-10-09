@@ -152,14 +152,14 @@ recommended. Even so, the model may require several minutes to fit.
 ``` r
 fit <- fit_spawner(clemens_sockeye, iter_warmup = 500, iter_sampling = 500, assumed_residence = 15.5, adapt_delta = 0.99, refresh = 0)
 #> Running MCMC with 4 parallel chains...
-#> Chain 1 finished in 76.9 seconds.
-#> Chain 4 finished in 100.1 seconds.
-#> Chain 2 finished in 102.7 seconds.
-#> Chain 3 finished in 108.5 seconds.
+#> Chain 2 finished in 92.5 seconds.
+#> Chain 1 finished in 101.2 seconds.
+#> Chain 3 finished in 102.0 seconds.
+#> Chain 4 finished in 102.3 seconds.
 #> 
 #> All 4 chains finished successfully.
-#> Mean chain execution time: 97.0 seconds.
-#> Total execution time: 108.8 seconds.
+#> Mean chain execution time: 99.5 seconds.
+#> Total execution time: 102.7 seconds.
 ```
 
 ## Model diagnostics
@@ -172,9 +172,9 @@ model convergence.
 ``` r
 diagnostics(fit)
 #>   converged    quality divergences treedepth_hits max_rhat min_ess_bulk
-#> 1      TRUE acceptable           0              0    1.008          331
+#> 1      TRUE acceptable           0              0    1.009          318
 #>   min_ess_tail      recommendation
-#> 1          636 No action required.
+#> 1          721 No action required.
 ```
 
 In this example, all diagnostic checks were acceptable. No divergent
@@ -249,36 +249,44 @@ appropriate for estimating spawner abundance.
 
 ## Abundance estimates
 
-The abundance summary also reports the number of surveys within each
-year having posterior outlier probabilities greater than 0.25. This
-provides a simple indicator of observations that may have been
-down-weighted by the robust observation model. This value should be
-interpreted as a diagnostic rather than a measure of data quality.
+The abundance summary reports posterior median abundance estimates and
+credible intervals for each year. When residence time is supplied,
+traditional trapezoidal area under the curve (TAUC) abundance estimates
+are also reported, together with the percent difference between the
+posterior median abundance estimate and the corresponding TAUC estimate.
+
+Two diagnostic indicators are included in the abundance table. The
+`multimodal` column identifies years with evidence of multiple major
+run-timing peaks, which may violate the model assumption of a single
+seasonal peak. The `n_outliers` column reports the number of surveys
+within each year having posterior outlier probabilities greater than
+0.25. These diagnostics should be interpreted as indicators of potential
+model-data conflict rather than measures of data quality.
 
 ``` r
 abund <- abundance(fit)
 knitr::kable(abund)
 ```
 
-| year | lower_95 | lower_66 | median | upper_66 | upper_95 | n_outliers |  TAUC |
-|-----:|---------:|---------:|-------:|---------:|---------:|-----------:|------:|
-| 2008 |     7708 |    13187 |  19315 |    28130 |    40713 |          1 | 14911 |
-| 2009 |    19454 |    26576 |  36466 |    53249 |    78069 |          0 | 37985 |
-| 2010 |    19535 |    27652 |  40510 |    63387 |   100690 |          0 | 66268 |
-| 2011 |    17615 |    25101 |  33728 |    45385 |    63006 |          1 | 34652 |
-| 2012 |     6588 |     9616 |  13803 |    20583 |    34785 |          1 | 16593 |
-| 2013 |     8844 |    11167 |  14329 |    18779 |    25889 |          0 | 13387 |
-| 2014 |     5244 |     6576 |   8321 |    10696 |    14330 |          0 | 12401 |
-| 2015 |     2219 |     2728 |   3352 |     4192 |     5254 |          1 |  2611 |
-| 2016 |     7719 |     9931 |  12699 |    16265 |    21174 |          2 | 17529 |
-| 2017 |     8374 |    11848 |  17224 |    25358 |    36588 |          4 | 30735 |
-| 2018 |    10445 |    13163 |  16873 |    21921 |    28663 |          1 | 17290 |
-| 2019 |     5363 |     6949 |   8732 |    11124 |    14185 |          0 |  7904 |
-| 2020 |     3384 |     4285 |   5414 |     6963 |     9381 |          0 |  5188 |
-| 2021 |    16301 |    21329 |  28013 |    37274 |    51013 |          0 | 21745 |
-| 2022 |     3925 |     4817 |   6135 |     8338 |    13446 |          3 | 24805 |
-| 2023 |    11344 |    15849 |  21654 |    29725 |    40093 |          2 | 24246 |
-| 2024 |     4323 |     5486 |   6703 |     8382 |    10610 |          1 |  5543 |
+| year | median | lwr_95 | lwr_66 | upr_66 | upr_95 |  TAUC | pct_diff_TAUC | multimodal | n_outliers |
+|-----:|-------:|-------:|-------:|-------:|-------:|------:|--------------:|:-----------|-----------:|
+| 2008 |  19440 |   7667 |  13253 |  27912 |  42339 | 14911 |          30.4 | FALSE      |          1 |
+| 2009 |  36456 |  18679 |  25834 |  54909 |  83292 | 37985 |          -4.0 | FALSE      |          0 |
+| 2010 |  39614 |  19414 |  27714 |  61947 |  98563 | 66268 |         -40.2 | FALSE      |          0 |
+| 2011 |  33701 |  18543 |  25176 |  43741 |  58053 | 34652 |          -2.7 | FALSE      |          1 |
+| 2012 |  13689 |   6374 |   9414 |  20310 |  32988 | 16593 |         -17.5 | FALSE      |          1 |
+| 2013 |  14245 |   8658 |  11155 |  18648 |  25445 | 13387 |           6.4 | FALSE      |          0 |
+| 2014 |   8220 |   5171 |   6546 |  10670 |  13892 | 12401 |         -33.7 | FALSE      |          0 |
+| 2015 |   3366 |   2042 |   2695 |   4225 |   5467 |  2611 |          28.9 | TRUE       |          1 |
+| 2016 |  12443 |   7706 |   9864 |  15854 |  21253 | 17529 |         -29.0 | FALSE      |          2 |
+| 2017 |  17173 |   8595 |  11951 |  24746 |  37650 | 30735 |         -44.1 | FALSE      |          4 |
+| 2018 |  16854 |  10247 |  13166 |  22009 |  28915 | 17290 |          -2.5 | TRUE       |          1 |
+| 2019 |   8605 |   5301 |   6863 |  10926 |  14021 |  7904 |           8.9 | TRUE       |          0 |
+| 2020 |   5409 |   3426 |   4285 |   6976 |   9124 |  5188 |           4.3 | FALSE      |          0 |
+| 2021 |  27755 |  15719 |  21061 |  37033 |  52638 | 21745 |          27.6 | FALSE      |          0 |
+| 2022 |   6063 |   3782 |   4799 |   8176 |  13283 | 24805 |         -75.6 | FALSE      |          3 |
+| 2023 |  21717 |  11521 |  15966 |  29003 |  38825 | 24246 |         -10.4 | FALSE      |          2 |
+| 2024 |   6665 |   4221 |   5330 |   8291 |  10554 |  5543 |          20.2 | FALSE      |          1 |
 
 The abundance plot shows the median (point) as well as the 66 and 95%
 posterior credible intervals. The red x shows the estimate based on

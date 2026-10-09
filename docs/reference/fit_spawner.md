@@ -91,7 +91,9 @@ fit_spawner(
 
 ## Value
 
-A `spawnBayes_fit` object.
+A `spawnBayes_fit` object containing the fitted model, processed survey
+data, annual TAUC estimates when available, and run-timing diagnostic
+information including potential multimodal years.
 
 ## Details
 

@@ -213,14 +213,14 @@ recommended. Even so, the model may require several minutes to fit.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_spawner.html">fit_spawner</a></span><span class="op">(</span><span class="va">clemens_sockeye</span>, iter_warmup <span class="op">=</span> <span class="fl">500</span>, iter_sampling <span class="op">=</span> <span class="fl">500</span>, assumed_residence <span class="op">=</span> <span class="fl">15.5</span>, adapt_delta <span class="op">=</span> <span class="fl">0.99</span>, refresh <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running MCMC with 4 parallel chains...</span></span>
-<span><span class="co">#&gt; Chain 1 finished in 76.9 seconds.</span></span>
-<span><span class="co">#&gt; Chain 4 finished in 100.1 seconds.</span></span>
-<span><span class="co">#&gt; Chain 2 finished in 102.7 seconds.</span></span>
-<span><span class="co">#&gt; Chain 3 finished in 108.5 seconds.</span></span>
+<span><span class="co">#&gt; Chain 2 finished in 92.5 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1 finished in 101.2 seconds.</span></span>
+<span><span class="co">#&gt; Chain 3 finished in 102.0 seconds.</span></span>
+<span><span class="co">#&gt; Chain 4 finished in 102.3 seconds.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All 4 chains finished successfully.</span></span>
-<span><span class="co">#&gt; Mean chain execution time: 97.0 seconds.</span></span>
-<span><span class="co">#&gt; Total execution time: 108.8 seconds.</span></span></code></pre></div>
+<span><span class="co">#&gt; Mean chain execution time: 99.5 seconds.</span></span>
+<span><span class="co">#&gt; Total execution time: 102.7 seconds.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="model-diagnostics">Model diagnostics<a class="anchor" aria-label="anchor" href="#model-diagnostics"></a>
@@ -230,9 +230,9 @@ of MCMC sampling performance and model convergence.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   converged    quality divergences treedepth_hits max_rhat min_ess_bulk</span></span>
-<span><span class="co">#&gt; 1      TRUE acceptable           0              0    1.008          331</span></span>
+<span><span class="co">#&gt; 1      TRUE acceptable           0              0    1.009          318</span></span>
 <span><span class="co">#&gt;   min_ess_tail      recommendation</span></span>
-<span><span class="co">#&gt; 1          636 No action required.</span></span></code></pre></div>
+<span><span class="co">#&gt; 1          721 No action required.</span></span></code></pre></div>
 <p>In this example, all diagnostic checks were acceptable. No divergent
 transitions were detected, no maximum tree-depth warnings were
 encountered, and the largest Rhat value was close to 1. Effective sample
@@ -301,205 +301,252 @@ appropriate for estimating spawner abundance.</p>
 <div class="section level2">
 <h2 id="abundance-estimates">Abundance estimates<a class="anchor" aria-label="anchor" href="#abundance-estimates"></a>
 </h2>
-<p>The abundance summary also reports the number of surveys within each
-year having posterior outlier probabilities greater than 0.25. This
-provides a simple indicator of observations that may have been
-down-weighted by the robust observation model. This value should be
-interpreted as a diagnostic rather than a measure of data quality.</p>
+<p>The abundance summary reports posterior median abundance estimates
+and credible intervals for each year. When residence time is supplied,
+traditional trapezoidal area under the curve (TAUC) abundance estimates
+are also reported, together with the percent difference between the
+posterior median abundance estimate and the corresponding TAUC
+estimate.</p>
+<p>Two diagnostic indicators are included in the abundance table. The
+<code>multimodal</code> column identifies years with evidence of
+multiple major run-timing peaks, which may violate the model assumption
+of a single seasonal peak. The <code>n_outliers</code> column reports
+the number of surveys within each year having posterior outlier
+probabilities greater than 0.25. These diagnostics should be interpreted
+as indicators of potential model-data conflict rather than measures of
+data quality.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">abund</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abundance.html">abundance</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">abund</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
+<col width="6%">
+<col width="8%">
+<col width="8%">
+<col width="8%">
+<col width="8%">
+<col width="8%">
 <col width="7%">
+<col width="17%">
 <col width="13%">
 <col width="13%">
-<col width="10%">
-<col width="13%">
-<col width="13%">
-<col width="16%">
-<col width="9%">
 </colgroup>
 <thead><tr class="header">
 <th align="right">year</th>
-<th align="right">lower_95</th>
-<th align="right">lower_66</th>
 <th align="right">median</th>
-<th align="right">upper_66</th>
-<th align="right">upper_95</th>
-<th align="right">n_outliers</th>
+<th align="right">lwr_95</th>
+<th align="right">lwr_66</th>
+<th align="right">upr_66</th>
+<th align="right">upr_95</th>
 <th align="right">TAUC</th>
+<th align="right">pct_diff_TAUC</th>
+<th align="left">multimodal</th>
+<th align="right">n_outliers</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="right">2008</td>
-<td align="right">7708</td>
-<td align="right">13187</td>
-<td align="right">19315</td>
-<td align="right">28130</td>
-<td align="right">40713</td>
-<td align="right">1</td>
+<td align="right">19440</td>
+<td align="right">7667</td>
+<td align="right">13253</td>
+<td align="right">27912</td>
+<td align="right">42339</td>
 <td align="right">14911</td>
+<td align="right">30.4</td>
+<td align="left">FALSE</td>
+<td align="right">1</td>
 </tr>
 <tr class="even">
 <td align="right">2009</td>
-<td align="right">19454</td>
-<td align="right">26576</td>
-<td align="right">36466</td>
-<td align="right">53249</td>
-<td align="right">78069</td>
-<td align="right">0</td>
+<td align="right">36456</td>
+<td align="right">18679</td>
+<td align="right">25834</td>
+<td align="right">54909</td>
+<td align="right">83292</td>
 <td align="right">37985</td>
+<td align="right">-4.0</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="right">2010</td>
-<td align="right">19535</td>
-<td align="right">27652</td>
-<td align="right">40510</td>
-<td align="right">63387</td>
-<td align="right">100690</td>
-<td align="right">0</td>
+<td align="right">39614</td>
+<td align="right">19414</td>
+<td align="right">27714</td>
+<td align="right">61947</td>
+<td align="right">98563</td>
 <td align="right">66268</td>
+<td align="right">-40.2</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="right">2011</td>
-<td align="right">17615</td>
-<td align="right">25101</td>
-<td align="right">33728</td>
-<td align="right">45385</td>
-<td align="right">63006</td>
-<td align="right">1</td>
+<td align="right">33701</td>
+<td align="right">18543</td>
+<td align="right">25176</td>
+<td align="right">43741</td>
+<td align="right">58053</td>
 <td align="right">34652</td>
+<td align="right">-2.7</td>
+<td align="left">FALSE</td>
+<td align="right">1</td>
 </tr>
 <tr class="odd">
 <td align="right">2012</td>
-<td align="right">6588</td>
-<td align="right">9616</td>
-<td align="right">13803</td>
-<td align="right">20583</td>
-<td align="right">34785</td>
-<td align="right">1</td>
+<td align="right">13689</td>
+<td align="right">6374</td>
+<td align="right">9414</td>
+<td align="right">20310</td>
+<td align="right">32988</td>
 <td align="right">16593</td>
+<td align="right">-17.5</td>
+<td align="left">FALSE</td>
+<td align="right">1</td>
 </tr>
 <tr class="even">
 <td align="right">2013</td>
-<td align="right">8844</td>
-<td align="right">11167</td>
-<td align="right">14329</td>
-<td align="right">18779</td>
-<td align="right">25889</td>
-<td align="right">0</td>
+<td align="right">14245</td>
+<td align="right">8658</td>
+<td align="right">11155</td>
+<td align="right">18648</td>
+<td align="right">25445</td>
 <td align="right">13387</td>
+<td align="right">6.4</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="right">2014</td>
-<td align="right">5244</td>
-<td align="right">6576</td>
-<td align="right">8321</td>
-<td align="right">10696</td>
-<td align="right">14330</td>
-<td align="right">0</td>
+<td align="right">8220</td>
+<td align="right">5171</td>
+<td align="right">6546</td>
+<td align="right">10670</td>
+<td align="right">13892</td>
 <td align="right">12401</td>
+<td align="right">-33.7</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="right">2015</td>
-<td align="right">2219</td>
-<td align="right">2728</td>
-<td align="right">3352</td>
-<td align="right">4192</td>
-<td align="right">5254</td>
-<td align="right">1</td>
+<td align="right">3366</td>
+<td align="right">2042</td>
+<td align="right">2695</td>
+<td align="right">4225</td>
+<td align="right">5467</td>
 <td align="right">2611</td>
+<td align="right">28.9</td>
+<td align="left">TRUE</td>
+<td align="right">1</td>
 </tr>
 <tr class="odd">
 <td align="right">2016</td>
-<td align="right">7719</td>
-<td align="right">9931</td>
-<td align="right">12699</td>
-<td align="right">16265</td>
-<td align="right">21174</td>
-<td align="right">2</td>
+<td align="right">12443</td>
+<td align="right">7706</td>
+<td align="right">9864</td>
+<td align="right">15854</td>
+<td align="right">21253</td>
 <td align="right">17529</td>
+<td align="right">-29.0</td>
+<td align="left">FALSE</td>
+<td align="right">2</td>
 </tr>
 <tr class="even">
 <td align="right">2017</td>
-<td align="right">8374</td>
-<td align="right">11848</td>
-<td align="right">17224</td>
-<td align="right">25358</td>
-<td align="right">36588</td>
-<td align="right">4</td>
+<td align="right">17173</td>
+<td align="right">8595</td>
+<td align="right">11951</td>
+<td align="right">24746</td>
+<td align="right">37650</td>
 <td align="right">30735</td>
+<td align="right">-44.1</td>
+<td align="left">FALSE</td>
+<td align="right">4</td>
 </tr>
 <tr class="odd">
 <td align="right">2018</td>
-<td align="right">10445</td>
-<td align="right">13163</td>
-<td align="right">16873</td>
-<td align="right">21921</td>
-<td align="right">28663</td>
-<td align="right">1</td>
+<td align="right">16854</td>
+<td align="right">10247</td>
+<td align="right">13166</td>
+<td align="right">22009</td>
+<td align="right">28915</td>
 <td align="right">17290</td>
+<td align="right">-2.5</td>
+<td align="left">TRUE</td>
+<td align="right">1</td>
 </tr>
 <tr class="even">
 <td align="right">2019</td>
-<td align="right">5363</td>
-<td align="right">6949</td>
-<td align="right">8732</td>
-<td align="right">11124</td>
-<td align="right">14185</td>
-<td align="right">0</td>
+<td align="right">8605</td>
+<td align="right">5301</td>
+<td align="right">6863</td>
+<td align="right">10926</td>
+<td align="right">14021</td>
 <td align="right">7904</td>
+<td align="right">8.9</td>
+<td align="left">TRUE</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="right">2020</td>
-<td align="right">3384</td>
+<td align="right">5409</td>
+<td align="right">3426</td>
 <td align="right">4285</td>
-<td align="right">5414</td>
-<td align="right">6963</td>
-<td align="right">9381</td>
-<td align="right">0</td>
+<td align="right">6976</td>
+<td align="right">9124</td>
 <td align="right">5188</td>
+<td align="right">4.3</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="right">2021</td>
-<td align="right">16301</td>
-<td align="right">21329</td>
-<td align="right">28013</td>
-<td align="right">37274</td>
-<td align="right">51013</td>
-<td align="right">0</td>
+<td align="right">27755</td>
+<td align="right">15719</td>
+<td align="right">21061</td>
+<td align="right">37033</td>
+<td align="right">52638</td>
 <td align="right">21745</td>
+<td align="right">27.6</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="right">2022</td>
-<td align="right">3925</td>
-<td align="right">4817</td>
-<td align="right">6135</td>
-<td align="right">8338</td>
-<td align="right">13446</td>
-<td align="right">3</td>
+<td align="right">6063</td>
+<td align="right">3782</td>
+<td align="right">4799</td>
+<td align="right">8176</td>
+<td align="right">13283</td>
 <td align="right">24805</td>
+<td align="right">-75.6</td>
+<td align="left">FALSE</td>
+<td align="right">3</td>
 </tr>
 <tr class="even">
 <td align="right">2023</td>
-<td align="right">11344</td>
-<td align="right">15849</td>
-<td align="right">21654</td>
-<td align="right">29725</td>
-<td align="right">40093</td>
-<td align="right">2</td>
+<td align="right">21717</td>
+<td align="right">11521</td>
+<td align="right">15966</td>
+<td align="right">29003</td>
+<td align="right">38825</td>
 <td align="right">24246</td>
+<td align="right">-10.4</td>
+<td align="left">FALSE</td>
+<td align="right">2</td>
 </tr>
 <tr class="odd">
 <td align="right">2024</td>
-<td align="right">4323</td>
-<td align="right">5486</td>
-<td align="right">6703</td>
-<td align="right">8382</td>
-<td align="right">10610</td>
-<td align="right">1</td>
+<td align="right">6665</td>
+<td align="right">4221</td>
+<td align="right">5330</td>
+<td align="right">8291</td>
+<td align="right">10554</td>
 <td align="right">5543</td>
+<td align="right">20.2</td>
+<td align="left">FALSE</td>
+<td align="right">1</td>
 </tr>
 </tbody>
 </table>

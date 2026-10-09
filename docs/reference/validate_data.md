@@ -34,3 +34,8 @@ variable identifying observations that may differ in observation error.
 Categories containing fewer than 10 observations generate a warning
 because group-specific observation-error estimates may be poorly
 informed.
+
+The function also evaluates annual run-timing patterns for evidence of
+multiple major peaks. A warning is generated if potentially multimodal
+run timing is detected because spawnBayes assumes a single seasonal peak
+in spawner abundance.
