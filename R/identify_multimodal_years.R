@@ -66,12 +66,6 @@ identify_multimodal_years <- function(data) {
     dplyr::mutate(
       multimodal = n_major_peaks > 1
     ) |>
-    dplyr::bind_cols(
-      data |>
-        dplyr::distinct(
-          year = lubridate::year(date)
-        ) |>
-        dplyr::arrange(year)
-    )
+    dplyr::arrange(year)
   
 }
