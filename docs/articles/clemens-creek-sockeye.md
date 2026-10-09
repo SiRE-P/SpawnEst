@@ -152,14 +152,14 @@ recommended. Even so, the model may require several minutes to fit.
 ``` r
 fit <- fit_spawner(clemens_sockeye, iter_warmup = 500, iter_sampling = 500, assumed_residence = 15.5, adapt_delta = 0.99, refresh = 0)
 #> Running MCMC with 4 parallel chains...
-#> Chain 1 finished in 64.6 seconds.
-#> Chain 4 finished in 85.5 seconds.
-#> Chain 2 finished in 87.2 seconds.
-#> Chain 3 finished in 93.6 seconds.
+#> Chain 1 finished in 76.9 seconds.
+#> Chain 4 finished in 100.1 seconds.
+#> Chain 2 finished in 102.7 seconds.
+#> Chain 3 finished in 108.5 seconds.
 #> 
 #> All 4 chains finished successfully.
-#> Mean chain execution time: 82.7 seconds.
-#> Total execution time: 94.0 seconds.
+#> Mean chain execution time: 97.0 seconds.
+#> Total execution time: 108.8 seconds.
 ```
 
 ## Model diagnostics

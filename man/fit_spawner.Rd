@@ -65,7 +65,10 @@ reduces the influence of anomalous surveys on model fitting.}
 \item{adapt_delta}{Stan adaptation target acceptance rate.}
 }
 \value{
-A \code{spawnBayes_fit} object.
+A \code{spawnBayes_fit} object containing the fitted
+model, processed survey data, annual TAUC estimates when
+available, and run-timing diagnostic information including
+potential multimodal years.
 }
 \description{
 Fit the spawnBayes model to repeated spawner-count surveys.
